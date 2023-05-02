@@ -52,6 +52,15 @@ Aplicativo desenvolvido para facilitar o acesso ao site [TabNews](www.tabnews.co
 
 <p align="right">(<a href="#readme-top">Voltar para o início</a>)</p>
 
+## Prints
+
+| Tela       | Dark mode                                            | White Mode                                            |
+| :--------- | :--------------------------------------------------- | :---------------------------------------------------- |
+| Revelantes | <img src="./.img/revelantes-dark.jpg" width="250px"> | <img src="./.img/revelantes-white.jpg" width="250px"> |
+| Search     | <img src="./.img/search-dark.jpg" width="250px">     | <img src="./.img/search-white.jpg" width="250px">     |
+| User       | <img src="./.img/user-dark.jpg" width="250px">       | <img src="./.img/user-white.jpg" width="250px">       |
+| Post       | <img src=".img/post-dark.jpg" width="250px">         | <img src=".img/post-white.jpg" width="250px">         |
+
 ### Tecnologias utilizadas
 
 - [React Native](https://reactnative.dev/)
