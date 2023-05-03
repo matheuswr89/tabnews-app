@@ -6,6 +6,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { ActivityIndicator, RefreshControl, Text, View } from "react-native";
 import uuid from "react-native-uuid";
 import IconsOcticons from "react-native-vector-icons/Octicons";
+import EmptyList from "../components/EmptyList";
 import ListItem from "../components/ListItem";
 import AuthContext from "../context/AuthContext";
 import { getUserContent } from "../service/contents";
@@ -82,6 +83,7 @@ export default function User(props: NativeStackScreenProps<any, any>) {
         </View>
       </View>
       {loading && !refreshing && <ActivityIndicator size={"large"} />}
+      {content.length === 0 && <EmptyList />}
       {(post.length > 0 || comments.length > 0) && (
         <Tabs.Navigator
           key={6}

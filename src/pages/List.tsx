@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { ActivityIndicator, RefreshControl, View } from "react-native";
+import EmptyList from "../components/EmptyList";
 import ListItem from "../components/ListItem";
 import FavoritesContext from "../context/FavoritesContext";
 import { getTopics } from "../service/topics";
@@ -57,6 +58,7 @@ export default function List({ strategy }: any) {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        ListEmptyComponent={EmptyList}
         ListFooterComponent={() =>
           strategy !== "favorites" &&
           loading &&
