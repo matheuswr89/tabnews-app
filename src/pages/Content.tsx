@@ -25,7 +25,7 @@ export default function Content(props: NativeStackScreenProps<any, any>) {
     props.navigation.setOptions({
       title: props.route.params?.title || value?.title || "Comentário",
     });
-  }, [isReload === true]);
+  }, []);
 
   const data: any = [
     <Post value={value} loading={loadingPost} />,

@@ -1,8 +1,8 @@
-import { Button } from "@rneui/base";
+import { useNavigation } from "@react-navigation/native";
+import FlashList from "@shopify/flash-list/dist/FlashList";
 import axios from "axios";
-import { useState } from "react";
-import { ActivityIndicator, ScrollView, View } from "react-native";
-import uuid from "react-native-uuid";
+import { useCallback, useState } from "react";
+import { ActivityIndicator, RefreshControl, View } from "react-native";
 import EmptyList from "../components/EmptyList";
 import ListItem from "../components/ListItem";
 import SwitchComponent from "../components/SearchBar";
@@ -14,6 +14,8 @@ export default function Search() {
   const [nextPageLink, setNextPageLink] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingContent, setLoadingContent] = useState<boolean>(false);
+  const { push }: any = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
 
   const nextPageSearch = async () => {
     setLoading(true);
@@ -22,8 +24,15 @@ export default function Search() {
     setLoading(false);
   };
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    nextPageSearch().then(() => {
+      setRefreshing(false);
+    });
+  }, []);
+
   return (
-    <ScrollView>
+    <View style={{ width: "100%", height: "100%" }}>
       <SwitchComponent
         searchFunc={search}
         setLoadingContent={setLoadingContent}
@@ -31,22 +40,29 @@ export default function Search() {
         setNextPageLink={setNextPageLink}
       />
       {loadingContent && <ActivityIndicator size="large" />}
-      {!loadingContent &&
-        value.map((v: any, index: number) => (
-          <View key={v?.title + uuid.v4()}>
-            <ListItem post={v} index={index} />
-          </View>
-        ))}
-      {!loadingContent && value.length === 0 && <EmptyList />}
-      {nextPageLink && value.length > 0 && (
-        <Button
-          onPress={nextPageSearch}
-          title="Carregar mais..."
-          loading={loading}
-          buttonStyle={global.button}
-          titleStyle={global.buttonText}
+      {!loadingContent && (
+        <FlashList
+          keyExtractor={(item, index) => {
+            return item + index.toString();
+          }}
+          renderItem={({ item, index }) => {
+            return <ListItem index={index} post={item} push={push} />;
+          }}
+          data={value}
+          estimatedItemSize={1000}
+          onEndReached={
+            nextPageLink && value.length > 10 ? nextPageSearch : null
+          }
+          onEndReachedThreshold={0.2}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          ListFooterComponent={() =>
+            loading && !refreshing ? <ActivityIndicator size={"large"} /> : null
+          }
         />
       )}
-    </ScrollView>
+      {!loadingContent && value.length === 0 && <EmptyList />}
+    </View>
   );
 }

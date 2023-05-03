@@ -6,6 +6,7 @@ import { useContext, useState } from "react";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import AuthContext from "../context/AuthContext";
 import FavoritesContext from "../context/FavoritesContext";
+import ReloadContentContext from "../context/ReloadContentContext";
 import { isUserLogged } from "../hooks/isLogged";
 import { showAlert } from "../hooks/showAlert";
 import { deleteOrEditContent, postContent } from "../service/contents";
@@ -13,7 +14,7 @@ import { markdownStyles } from "../util/global";
 
 export default function GroupButton({ content }) {
   const { isFavorite, toggleFavorite } = useContext(FavoritesContext);
-  //  const { toggleReload, isReload } = useContext(ReloadContentContext);
+  const { toggleReload, isReload } = useContext(ReloadContentContext);
   const { user } = useContext(AuthContext);
   const { colors } = useTheme();
   const { isLogged } = useContext(AuthContext);
@@ -27,7 +28,7 @@ export default function GroupButton({ content }) {
   const url = `${content.owner_username}/${content.slug}`;
   const isCommentUser = content.owner_id === user?.id;
 
-  //if (!isReload) toggleReload();
+  if (!isReload) toggleReload();
 
   const adicionarPost = () => {
     const data = {
@@ -37,7 +38,7 @@ export default function GroupButton({ content }) {
     };
     showAlert({
       title: "Deseja realmente adicionar o comentário?",
-      onPressYes: () => postContent(data, () => {}),
+      onPressYes: () => postContent(data, toggleReload),
     });
   };
 
@@ -46,7 +47,7 @@ export default function GroupButton({ content }) {
       title: `Deseja realmente excluir o ${parentId ? "comentario" : "post"}?`,
       message: "Essa ação é irreversível!",
       onPressYes: () =>
-        deleteOrEditContent(url, { status: "deleted" }, () => {}),
+        deleteOrEditContent(url, { status: "deleted" }, toggleReload),
     });
   };
 
@@ -58,7 +59,7 @@ export default function GroupButton({ content }) {
     };
     showAlert({
       title: "Deseja realmente editar o comentario?",
-      onPressYes: () => deleteOrEditContent(url, data, () => {}),
+      onPressYes: () => deleteOrEditContent(url, data, toggleReload),
     });
   };
 

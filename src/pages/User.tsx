@@ -1,17 +1,11 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { useRoute, useTheme } from "@react-navigation/native";
+import { useNavigation, useRoute, useTheme } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import FlashList from "@shopify/flash-list/dist/FlashList";
 import { useCallback, useContext, useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  RefreshControl,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, RefreshControl, Text, View } from "react-native";
 import uuid from "react-native-uuid";
 import IconsOcticons from "react-native-vector-icons/Octicons";
-import EmptyList from "../components/EmptyList";
 import ListItem from "../components/ListItem";
 import AuthContext from "../context/AuthContext";
 import { getUserContent } from "../service/contents";
@@ -21,24 +15,24 @@ const Tabs = createMaterialTopTabNavigator();
 
 export default function User(props: NativeStackScreenProps<any, any>) {
   const { user } = useContext(AuthContext);
-  const [currentUser, setCurrentUser] = useState<any>(user);
-  const [content, setContent] = useState([]);
-  const [loading, setLoading] = useState(true);
   const { colors } = useTheme();
   const { params }: any = useRoute();
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [content, setContent] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const perPage = 20;
 
+  const perPage = 10;
   let post = [],
     comments = [];
 
   useEffect(() => {
     if (!!params) {
-      fetchUser(params.name);
       props.navigation.setOptions({
         headerRight: null,
       });
     }
+    fetchUser(!!params ? params.name : user.username);
     loadPosts();
   }, []);
 
@@ -76,7 +70,6 @@ export default function User(props: NativeStackScreenProps<any, any>) {
         <Text style={{ color: colors.text, fontSize: 20 }}>
           {currentUser?.username}
         </Text>
-        <Text style={{ color: colors.text }}>{currentUser?.email}</Text>
         <View style={{ flexDirection: "row" }}>
           <Text style={{ color: colors.text, marginRight: 10 }}>
             <IconsOcticons name="square-fill" color="rgb(9, 105, 218)" />{" "}
@@ -143,21 +136,27 @@ export default function User(props: NativeStackScreenProps<any, any>) {
 }
 
 const List: any = ({ array, loadPosts, loading, refreshing, onRefresh }) => {
+  const { push }: any = useNavigation();
+
   return (
     <View style={{ marginVertical: 8, flex: 1 }} key={`_list${uuid.v4()}`}>
-      <FlatList
+      <FlashList
+        keyExtractor={(item, index) => {
+          return item + index.toString();
+        }}
+        renderItem={({ item, index }) => {
+          return <ListItem index={index} post={item} push={push} />;
+        }}
+        data={array}
+        estimatedItemSize={1000}
+        onEndReached={array.length > 10 ? loadPosts : null}
+        onEndReachedThreshold={0.2}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        data={array}
-        keyExtractor={(item) => `list${item.id}${uuid.v4()}`}
-        renderItem={({ item, index }) => <ListItem index={index} post={item} />}
-        onEndReached={array.length > 9 ? loadPosts : null}
-        onEndReachedThreshold={0.1}
         ListFooterComponent={() =>
           loading && !refreshing ? <ActivityIndicator size={"large"} /> : null
         }
-        ListEmptyComponent={() => <EmptyList />}
       />
     </View>
   );

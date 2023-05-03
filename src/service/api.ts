@@ -5,7 +5,7 @@ import { AUTH_TOKEN_KEY } from "../hooks/useAuth";
 const api = axios.create({
   baseURL: "https://www.tabnews.com.br/api/v1",
   //baseURL: "http://192.168.1.105:3000/api/v1",
-  //timeout: 30000,
+  timeout: 30000,
 });
 
 api.interceptors.request.use(async (config: AxiosRequestConfig) => {

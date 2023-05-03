@@ -1,5 +1,5 @@
 export function time_ago(time: string) {
-  const date: any = new Date(time);
+  const date: any = time ? new Date(time) : new Date();
   const now: any = new Date();
   const diffMs = now - date;
 

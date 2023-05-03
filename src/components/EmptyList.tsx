@@ -5,7 +5,7 @@ import Icon from "react-native-vector-icons/Foundation";
 export default function EmptyList() {
   const { colors } = useTheme();
   return (
-    <View style={{ alignItems: "center" }}>
+    <View style={{ flex: 1, alignItems: "center" }}>
       <Icon name="trees" size={30} color={colors.text} />
       <Text style={{ color: colors.text, fontSize: 20 }}>
         Nenhum conteúdo encontrado!

@@ -12,7 +12,7 @@ export default function FloatIcon() {
     >
       <IconMaterialCommunity
         name="text-box-plus-outline"
-        size={40}
+        size={30}
         color="#e4e3e3"
       />
     </TouchableOpacity>
@@ -21,12 +21,14 @@ export default function FloatIcon() {
 
 const styles = StyleSheet.create({
   container: {
-    width: 50,
     alignItems: "center",
-    padding: 6,
+    justifyContent: "center",
     backgroundColor: "#3e82d1",
-    zIndex: 30,
     position: "absolute",
+    width: 60,
+    height: 60,
+    padding: 6,
+    zIndex: 30,
     bottom: 70,
     right: 0,
     margin: 10,

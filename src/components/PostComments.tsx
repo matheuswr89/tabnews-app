@@ -11,7 +11,6 @@ export default function PostComments({ comments, loading }) {
 
   const getMoreComments = () => {
     setNumComments(numComments + 5);
-    console.log(comments.slice(0, numComments));
   };
 
   return (

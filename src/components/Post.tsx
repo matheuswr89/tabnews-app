@@ -72,6 +72,19 @@ export default function Post({ value, loading }) {
               </View>
             )}
             <OwnerInfo data={value} />
+            {value.title && (
+              <Text
+                style={{
+                  color: colors.text,
+                  fontSize: 20,
+                  fontWeight: "900",
+                  borderBottomColor: colors.text,
+                  borderBottomWidth: 2,
+                }}
+              >
+                {value.title}
+              </Text>
+            )}
             <MarkdownView body={value.body} card={colors.background} />
             {value.source_url && (
               <View style={[styles.sourceUrl, { borderTopColor: colors.text }]}>

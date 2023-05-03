@@ -17,7 +17,7 @@ export const search = async (
       );
       parseSearch(response, setNextPageLink, setValue);
       setLoadingContent(false);
-    } catch {
+    } catch (err) {
       Alert.alert(
         "Erro",
         "Não foi possivel completar a pesquisa, tente novamente mais tarde!"

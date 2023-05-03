@@ -104,7 +104,7 @@ export default function MarkdownView({ id, body, card }: any) {
         listKey: (item, index) => `_keylistKey${index.toString()}`,
         keyExtractor: (item, index) => `_keyExtractor${index.toString()}`,
         style: { backgroundColor: card, marginLeft: 3 },
-        initialNumToRender: 8,
+        initialNumToRender: 10,
         progressViewOffset: 10,
         accessible: true,
       }}
