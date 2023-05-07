@@ -45,9 +45,9 @@ export default function Search() {
           keyExtractor={(item, index) => {
             return item + index.toString();
           }}
-          renderItem={({ item, index }) => {
-            return <ListItem index={index} post={item} push={push} />;
-          }}
+          renderItem={({ item, index }) => (
+            <ListItem index={index} post={item} push={push} />
+          )}
           data={value}
           estimatedItemSize={1000}
           onEndReached={

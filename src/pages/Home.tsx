@@ -1,5 +1,5 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { useTheme } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import FloatIcon from "../components/FloatIcon";
 import List from "./List";
@@ -9,16 +9,23 @@ const Tabs = createMaterialTopTabNavigator();
 
 export default function Home() {
   const { colors } = useTheme();
+  const { navigate }: any = useNavigation();
 
   return (
     <>
-      <FloatIcon />
+      <FloatIcon
+        name="text-box-plus-outline"
+        color="#2c974b"
+        onPress={() => navigate("CreatePost", { mode: "creation" })}
+      />
+
       <Tabs.Navigator
         key={1}
         tabBarPosition="bottom"
         initialRouteName="Relevantes"
         screenOptions={({ route }: any) => ({
           tabBarOnPress: "navigation",
+          tabBarIndicatorStyle: { backgroundColor: "#2c974b" },
           tabBarStyle: {
             paddingBottom: 5,
           },

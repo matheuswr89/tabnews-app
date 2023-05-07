@@ -2,19 +2,23 @@ import {
   isStringWebLink,
   MarkdownEditor,
 } from "@matheuswr89/react-native-markdown-editor";
+
 import { useRoute, useTheme } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useContext, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import AuthContext from "../context/AuthContext";
 import ReloadContentContext from "../context/ReloadContentContext";
+import { showAlert } from "../hooks/showAlert";
+import { useContent } from "../hooks/useContent";
 import { deleteOrEditContent, postContent } from "../service/contents";
 import { global, markdownStyles } from "../util/global";
 
@@ -27,16 +31,26 @@ export const CreatePost = ({
   const isCreationMode = mode === "creation";
   const { toggleReload } = useContext(ReloadContentContext);
   const { user, logInUser } = useContext(AuthContext);
-
-  useEffect(() => {
-    navigation.setOptions({
-      title: isCreationMode ? "Novo post" : "Editar post",
-    });
-  }, []);
+  const { deleteContent, saveContent, getContent } = useContent();
 
   const [title, setTitle]: any = useState(content?.title || "");
   const [body, setBody]: any = useState(content?.body || "");
   const [source, setSource]: any = useState(content?.source_url || "");
+
+  const slug = isCreationMode ? "-new" : "-edit";
+
+  useEffect(() => {
+    getContent(slug).then((res) => {
+      if (res) {
+        setBody(res?.body);
+        setTitle(res?.title);
+        setSource(res?.source);
+      }
+    });
+    navigation.setOptions({
+      title: isCreationMode ? "Novo post" : "Editar post",
+    });
+  }, []);
 
   const enviarPost = () => {
     if (title.trim().length === 0) {
@@ -60,10 +74,11 @@ export const CreatePost = ({
       title,
       ...(source ? { source_url: source } : ""),
     };
-
+    setIsLoading(true);
     if (mode === "creation")
       postContent(payload, toggleReload).then((content) => {
         logInUser();
+        deleteContent(slug);
         navigation.replace("Content", {
           url: `${user.username}/${content.data.slug}`,
           title: content.data.title,
@@ -73,30 +88,55 @@ export const CreatePost = ({
       const url = `${content.owner_username}/${content.slug}`;
       deleteOrEditContent(url, payload, toggleReload).then((content) => {
         logInUser();
+        deleteContent(slug);
         navigation.navigate("Content", {
           url: `${user.username}/${content.data.slug}`,
           title,
         });
       });
     }
+    setIsLoading(false);
+  };
+
+  const onChangeText = (text) => {
+    const values = {
+      body: text,
+      source,
+      title,
+    };
+    saveContent(slug, values);
+    setBody(text);
+  };
+
+  const cancelButton = () => {
+    showAlert({
+      title: "Deseja realmente cancelar?",
+      message: "Os dados não salvos serão perdidos.",
+      onPressYes: () => {
+        deleteContent(slug);
+        navigation.goBack();
+      },
+    });
   };
 
   return (
-    <SafeAreaView style={{ marginHorizontal: 10, height: "100%" }}>
+    <ScrollView style={{ marginHorizontal: 10, height: "100%" }}>
       <TextInput
         value={title}
         onChangeText={setTitle}
         placeholder={"Título"}
         style={[global.input]}
+        placeholderTextColor="#000"
       />
       <MarkdownEditor
-        onMarkdownChange={setBody}
+        onMarkdownChange={onChangeText}
         markdown={body}
         placeholder="Escreva aqui..."
         placeholderTextColor={colors.text}
         textInputStyles={markdownStyles({ colors }).textInputStyles}
         buttonContainerStyles={markdownStyles({ colors }).buttonContainerStyles}
         buttonStyles={markdownStyles({ colors }).buttonStyles}
+        markdownViewStyles={markdownStyles({ colors }).markdownContainerStyles}
       />
       <TextInput
         value={source}
@@ -104,18 +144,42 @@ export const CreatePost = ({
         placeholder={"Fonte (opcional)"}
         style={[global.input]}
         keyboardType={"url"}
+        placeholderTextColor="#000"
       />
-      <TouchableOpacity
-        onPress={enviarPost}
-        style={global.loginButtonContainer}
+      <View
+        style={{
+          flexDirection: "row-reverse",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
-        {!isLoading && (
-          <Text style={global.loginButton}>
-            {isCreationMode ? "Publicar" : "Salvar alterações"}
+        <TouchableOpacity
+          onPress={enviarPost}
+          style={[
+            global.loginButtonContainer,
+            { width: isCreationMode ? 100 : 150 },
+          ]}
+        >
+          {!isLoading && (
+            <Text style={global.loginButton}>
+              {isCreationMode ? "Publicar" : "Salvar alterações"}
+            </Text>
+          )}
+          {isLoading && <ActivityIndicator size="large" />}
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={cancelButton}
+          style={[
+            global.loginButtonContainer,
+            { backgroundColor: "transparent", marginRight: 20 },
+          ]}
+        >
+          <Text style={[global.loginButton, { color: colors.text }]}>
+            Cancelar
           </Text>
-        )}
-        {isLoading && <ActivityIndicator size="large" />}
-      </TouchableOpacity>
-    </SafeAreaView>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };

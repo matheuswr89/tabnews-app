@@ -80,6 +80,7 @@ export const CreateAccount = ({ navigation }: any) => {
         autoComplete={"username"}
         secureTextEntry={false}
         onSubmitEditing={Keyboard.dismiss}
+        placeholderTextColor="#000"
       />
       <TextInput
         value={email}
@@ -90,6 +91,7 @@ export const CreateAccount = ({ navigation }: any) => {
         autoComplete={"email"}
         secureTextEntry={false}
         onSubmitEditing={Keyboard.dismiss}
+        placeholderTextColor="#000"
       />
       <View style={global.passwordContainer}>
         <TextInput
@@ -100,6 +102,7 @@ export const CreateAccount = ({ navigation }: any) => {
           style={[global.input]}
           secureTextEntry={!showPassword}
           onSubmitEditing={Keyboard.dismiss}
+          placeholderTextColor="#000"
         />
         <IconMaterialCommunityIcons
           name={showPassword ? "eye-off" : "eye"}
@@ -111,7 +114,7 @@ export const CreateAccount = ({ navigation }: any) => {
 
       <TouchableOpacity
         onPress={handleSignUp}
-        style={global.loginButtonContainer}
+        style={[global.loginButtonContainer, { width: "100%" }]}
       >
         {!isLoading && <Text style={global.loginButton}>Criar cadastro</Text>}
         {isLoading && <ActivityIndicator size="large" />}

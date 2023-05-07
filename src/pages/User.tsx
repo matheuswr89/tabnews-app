@@ -1,5 +1,5 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { useNavigation, useRoute, useTheme } from "@react-navigation/native";
+import { useRoute, useTheme } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import FlashList from "@shopify/flash-list/dist/FlashList";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -9,6 +9,7 @@ import IconsOcticons from "react-native-vector-icons/Octicons";
 import EmptyList from "../components/EmptyList";
 import ListItem from "../components/ListItem";
 import AuthContext from "../context/AuthContext";
+import ReloadContentContext from "../context/ReloadContentContext";
 import { getUserContent } from "../service/contents";
 import { getUser } from "../service/user";
 
@@ -19,13 +20,13 @@ export default function User(props: NativeStackScreenProps<any, any>) {
   const { colors } = useTheme();
   const { params }: any = useRoute();
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [content, setContent] = useState([]);
+  const [post, setPost] = useState([]);
+  const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
-  const perPage = 10;
-  let post = [],
-    comments = [];
+  const { isReload } = useContext(ReloadContentContext);
+  const [page, setPage] = useState(1);
+  const [last, setLast] = useState(false);
 
   useEffect(() => {
     if (!!params) {
@@ -35,30 +36,34 @@ export default function User(props: NativeStackScreenProps<any, any>) {
     }
     fetchUser(!!params ? params.name : user.username);
     loadPosts();
-  }, []);
+  }, [isReload === true]);
 
   const fetchUser = async (name: string) => {
     const res = await getUser(name);
     setCurrentUser(res.data);
   };
 
-  if (content) {
-    content.map((c) => (!c.parent_id ? post.push(c) : comments.push(c)));
-  }
-
   const loadPosts = async () => {
     setLoading(true);
-    const page =
-      content.length === 0 ? 1 : Math.floor(content.length / perPage) + 1;
-    getUserContent(!!params ? params.name : user?.username, page, perPage).then(
+    getUserContent(!!params ? params.name : user?.username, page).then(
       (response) => {
-        setContent([...content, ...response.data]);
+        const array = response.data;
+        if (array.length > 0) {
+          setComments([...comments, ...array.filter((e) => !!e.parent_id)]);
+          setPost([...post, ...array.filter((e) => !e.parent_id)]);
+        } else {
+          setLast(true);
+        }
+
         setLoading(false);
       }
     );
+    setPage(page + 1);
   };
 
   const onRefresh = useCallback(() => {
+    setPost([]);
+    setComments([]);
     setRefreshing(true);
     loadPosts().then(() => {
       setRefreshing(false);
@@ -83,21 +88,16 @@ export default function User(props: NativeStackScreenProps<any, any>) {
         </View>
       </View>
       {loading && !refreshing && <ActivityIndicator size={"large"} />}
-      {content.length === 0 && <EmptyList />}
+      {comments.length === 0 && post.length === 0 && <EmptyList />}
       {(post.length > 0 || comments.length > 0) && (
         <Tabs.Navigator
           key={6}
           backBehavior="none"
           screenOptions={({ route }: any) => ({
+            tabBarIndicatorStyle: { backgroundColor: "#2c974b" },
             tabBarStyle: {
               paddingBottom: 5,
               backgroundColor: colors.background,
-            },
-            tabBarLabelStyle: {
-              fontSize: 10,
-              margin: 0,
-              padding: 0,
-              width: 1000,
             },
           })}
         >
@@ -111,6 +111,7 @@ export default function User(props: NativeStackScreenProps<any, any>) {
                   loading={loading}
                   refreshing={refreshing}
                   onRefresh={onRefresh}
+                  last={last}
                   key="list1"
                 />
               )}
@@ -126,6 +127,7 @@ export default function User(props: NativeStackScreenProps<any, any>) {
                   loading={loading}
                   refreshing={refreshing}
                   onRefresh={onRefresh}
+                  last={last}
                   key="list1"
                 />
               )}
@@ -137,21 +139,24 @@ export default function User(props: NativeStackScreenProps<any, any>) {
   );
 }
 
-const List: any = ({ array, loadPosts, loading, refreshing, onRefresh }) => {
-  const { push }: any = useNavigation();
-
+const List: any = ({
+  array,
+  loadPosts,
+  loading,
+  refreshing,
+  onRefresh,
+  last,
+}) => {
   return (
     <View style={{ marginVertical: 8, flex: 1 }} key={`_list${uuid.v4()}`}>
       <FlashList
         keyExtractor={(item, index) => {
           return item + index.toString();
         }}
-        renderItem={({ item, index }) => {
-          return <ListItem index={index} post={item} push={push} />;
-        }}
+        renderItem={({ item, index }) => <ListItem index={index} post={item} />}
         data={array}
         estimatedItemSize={1000}
-        onEndReached={array.length > 10 ? loadPosts : null}
+        onEndReached={!last && array.length > 10 ? loadPosts : null}
         onEndReachedThreshold={0.2}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

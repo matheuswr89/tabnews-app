@@ -88,6 +88,7 @@ export const Login = ({ navigation }: any) => {
         autoCapitalize="none"
         secureTextEntry={false}
         onSubmitEditing={Keyboard.dismiss}
+        placeholderTextColor="#000"
       />
       <View style={global.passwordContainer}>
         <TextInput
@@ -98,6 +99,7 @@ export const Login = ({ navigation }: any) => {
           style={[global.input]}
           secureTextEntry={!showPassword}
           onSubmitEditing={Keyboard.dismiss}
+          placeholderTextColor="#000"
         />
         <IconMaterialCommunityIcons
           name={showPassword ? "eye-off" : "eye"}
@@ -112,7 +114,7 @@ export const Login = ({ navigation }: any) => {
 
       <TouchableOpacity
         onPress={handleSignIn}
-        style={global.loginButtonContainer}
+        style={[global.loginButtonContainer, { width: "100%" }]}
       >
         {!isLoading && <Text style={global.loginButton}>Login</Text>}
         {isLoading && <ActivityIndicator size="large" />}

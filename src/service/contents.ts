@@ -1,24 +1,15 @@
 import { Alert } from "react-native";
 import api from "./api";
 
-export const getContent = async (
-  setValue: any,
-  url: string,
-  navigation: any,
-  setLoadingPost: any
-) => {
-  setLoadingPost(true);
+export const getContent = async (url: string, navigation?: any) => {
   try {
     const response = await api.get(`/contents/${url}`);
-
-    setValue(response.data);
+    return response.data;
   } catch (err) {
     navigation.goBack();
-
     const response = err.response.data;
     Alert.alert(response.message, response.action);
   }
-  setLoadingPost(false);
 };
 
 export const getParentContent = async (url: string) => {
@@ -78,22 +69,12 @@ export const giveVote = async (
   }
 };
 
-export const getUserContent = async (
-  user: string,
-  page: number,
-  perPage: number
-) => {
+export const getUserContent = async (user: string, page: number) => {
   try {
-    if (!perPage) {
-      perPage = 10;
-    }
-
     if (!page) {
       page = 1;
     }
-    const response = await api.get(
-      `/contents/${user}?page=${page}&per_page=${perPage}`
-    );
+    const response = await api.get(`/contents/${user}?page=${page}`);
     return response;
   } catch (err) {
     const response = err.response.data;

@@ -2,33 +2,41 @@ import { MarkdownEditor } from "@matheuswr89/react-native-markdown-editor";
 import { Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { useNavigation, useTheme } from "@react-navigation/native";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import AuthContext from "../context/AuthContext";
 import FavoritesContext from "../context/FavoritesContext";
 import ReloadContentContext from "../context/ReloadContentContext";
 import { isUserLogged } from "../hooks/isLogged";
 import { showAlert } from "../hooks/showAlert";
+import { useContent } from "../hooks/useContent";
 import { deleteOrEditContent, postContent } from "../service/contents";
 import { markdownStyles } from "../util/global";
 
-export default function GroupButton({ content }) {
+export default function GroupButton({ content, isEdit, setIsEdit }: any) {
   const { isFavorite, toggleFavorite } = useContext(FavoritesContext);
   const { toggleReload, isReload } = useContext(ReloadContentContext);
-  const { user } = useContext(AuthContext);
   const { colors } = useTheme();
   const { isLogged } = useContext(AuthContext);
   const { navigate }: any = useNavigation();
+  const { deleteContent, saveContent, getContent } = useContent();
 
   const [isResponder, setIsResponder] = useState(false);
-  const [text, setText] = useState("");
-  const [isEdit, setIsEdit] = useState(false);
+  const [text, setText] = useState(isEdit ? content.body : "");
 
   const parentId = content.parent_id;
   const url = `${content.owner_username}/${content.slug}`;
-  const isCommentUser = content.owner_id === user?.id;
+  const slug = `-comment-${content.parent_id}`;
 
   if (!isReload) toggleReload();
+
+  useEffect(() => {
+    getContent(slug).then((res) => {
+      if (res) {
+        setText(res);
+      }
+    });
+  }, []);
 
   const adicionarPost = () => {
     const data = {
@@ -38,16 +46,8 @@ export default function GroupButton({ content }) {
     };
     showAlert({
       title: "Deseja realmente adicionar o comentário?",
-      onPressYes: () => postContent(data, toggleReload),
-    });
-  };
-
-  const excluirPost = () => {
-    showAlert({
-      title: `Deseja realmente excluir o ${parentId ? "comentario" : "post"}?`,
-      message: "Essa ação é irreversível!",
       onPressYes: () =>
-        deleteOrEditContent(url, { status: "deleted" }, toggleReload),
+        postContent(data, toggleReload).then(() => deleteContent(slug)),
     });
   };
 
@@ -59,31 +59,30 @@ export default function GroupButton({ content }) {
     };
     showAlert({
       title: "Deseja realmente editar o comentario?",
-      onPressYes: () => deleteOrEditContent(url, data, toggleReload),
+      onPressYes: () =>
+        deleteOrEditContent(url, data, toggleReload).then(() =>
+          deleteContent(slug)
+        ),
     });
   };
 
   const clickButtonResponder = () => {
     isUserLogged(isLogged, navigate);
-    if (isLogged && !isResponder) {
-      setText("");
+    if (isLogged) {
       setIsResponder(!isResponder);
-    }
-  };
-
-  const clickEditButton = () => {
-    if (parentId) {
-      setIsEdit(true);
-      setIsResponder(!isResponder);
-      setText(content.body);
-    } else {
-      navigate("CreatePost", { mode: "edition", content });
     }
   };
 
   const clickCancelarButton = () => {
-    setIsResponder(!isResponder);
-    if (isEdit === true) setIsEdit(false);
+    showAlert({
+      title: "Deseja realmente cancelar?",
+      message: "Os dados não salvos serão perdidos.",
+      onPressYes: () => {
+        setIsResponder(!isResponder);
+        if (isEdit === true) setIsEdit(false);
+        deleteContent(slug);
+      },
+    });
   };
 
   const clickEnviarButton = () => {
@@ -106,15 +105,21 @@ export default function GroupButton({ content }) {
     toggleFavorite(content);
   };
 
+  const onTextChange = (text) => {
+    saveContent(slug, text);
+    setText(text);
+  };
+
   return (
     <View>
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
+          zIndex: -10,
         }}
       >
-        {!isResponder && (
+        {(!isResponder || !isEdit) && (
           <View style={styles.container}>
             <TouchableOpacity
               style={[styles.button, { borderColor: "#21c5f7" }]}
@@ -122,31 +127,9 @@ export default function GroupButton({ content }) {
             >
               <Text style={styles.textResponder}>Responder</Text>
             </TouchableOpacity>
-            {isCommentUser && (
-              <>
-                <TouchableOpacity
-                  style={[styles.button, { borderColor: "#f72121" }]}
-                  onPress={excluirPost}
-                >
-                  <Text style={styles.textExcluir}>Excluir</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.button, { borderColor: "#48a09b" }]}
-                  onPress={clickEditButton}
-                >
-                  <Text style={styles.textEditar}>Editar</Text>
-                </TouchableOpacity>
-              </>
-            )}
           </View>
         )}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            width: 80,
-          }}
-        >
+        <View style={styles.iconView}>
           <TouchableOpacity onPress={favoritePost}>
             <Icon
               name="star"
@@ -162,11 +145,11 @@ export default function GroupButton({ content }) {
         </View>
       </View>
       <View>
-        {isResponder && (
+        {(isResponder || isEdit) && (
           <>
             <MarkdownEditor
               markdown={text}
-              onMarkdownChange={setText}
+              onMarkdownChange={onTextChange}
               placeholder="Escreva aqui..."
               placeholderTextColor={colors.text}
               textInputStyles={markdownStyles({ colors }).textInputStyles}
@@ -174,6 +157,9 @@ export default function GroupButton({ content }) {
                 markdownStyles({ colors }).buttonContainerStyles
               }
               buttonStyles={markdownStyles({ colors }).buttonStyles}
+              markdownViewStyles={
+                markdownStyles({ colors }).markdownContainerStyles
+              }
             />
             <View style={styles.container}>
               <TouchableOpacity
@@ -212,5 +198,10 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     margin: 2,
     padding: 6,
+  },
+  iconView: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    width: 80,
   },
 });

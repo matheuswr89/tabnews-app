@@ -17,6 +17,7 @@ const SwitchComponent = ({
       setValue([]);
       setNextPageLink("");
       searchFunc(search, setLoadingContent, setValue, setNextPageLink);
+      setSearch("");
     });
 
     return () => {
@@ -34,7 +35,9 @@ const SwitchComponent = ({
           fontSize: 20,
           padding: 5,
           borderRadius: 8,
+          color: "#000",
         }}
+        placeholderTextColor="#000"
         placeholder="Type Here..."
         onChangeText={updateSearch}
         keyboardType="web-search"

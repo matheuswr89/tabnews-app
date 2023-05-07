@@ -1,45 +1,59 @@
-import { useNavigation } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { ActivityIndicator, RefreshControl, View } from "react-native";
 import EmptyList from "../components/EmptyList";
 import ListItem from "../components/ListItem";
 import FavoritesContext from "../context/FavoritesContext";
+import { getContent } from "../service/contents";
 import { getTopics } from "../service/topics";
 
 export default function List({ strategy }: any) {
   const [loading, setLoading] = useState<boolean>(false);
   const [value, setValue]: any = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-
-  const { push }: any = useNavigation();
-  const { favorites } = useContext(FavoritesContext);
-
-  const perPage = 15;
+  const { favorites, replaceFavorite } = useContext(FavoritesContext);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     loadPosts();
-  }, []);
+  }, [strategy !== "favorites"]);
+
+  useEffect(() => {
+    loadPosts();
+  }, [favorites]);
 
   const loadPosts = async () => {
-    if (strategy === "favorites") {
-      setValue(favorites);
-      return;
+    if (strategy !== "favorites") {
+      setLoading(true);
+      const contents = await getTopics(strategy, page);
+      setValue([...value, ...contents]);
+      setLoading(false);
+      setPage(page + 1);
     }
-    setLoading(true);
+  };
 
-    const page =
-      value.length === 0 ? 1 : Math.floor(value.length / perPage) + 1;
-    const contents = await getTopics(strategy, page, perPage);
-    setValue([...value, ...contents]);
-    setLoading(false);
+  const updateFavorites = async () => {
+    for (let i = 0; i < favorites.length; i++) {
+      const response = await getContent(
+        `${favorites[i].owner_username}/${favorites[i].slug}`
+      );
+      replaceFavorite(favorites[i], response);
+    }
   };
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    loadPosts().then(() => {
-      setRefreshing(false);
-    });
+    if (strategy === "favorites") {
+      updateFavorites().then(() => {
+        setRefreshing(false);
+      });
+    } else {
+      setPage(1);
+      setValue([]);
+      loadPosts().then(() => {
+        setRefreshing(false);
+      });
+    }
   }, []);
 
   return (
@@ -49,11 +63,11 @@ export default function List({ strategy }: any) {
           return item + index.toString();
         }}
         renderItem={({ item, index }) => {
-          return <ListItem index={index} post={item} push={push} />;
+          return <ListItem index={index} post={item} />;
         }}
-        data={value}
+        data={strategy === "favorites" ? favorites : value}
         estimatedItemSize={200}
-        onEndReached={value.length > 10 ? loadPosts : null}
+        onEndReached={value.length >= 30 ? loadPosts : null}
         onEndReachedThreshold={0.2}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

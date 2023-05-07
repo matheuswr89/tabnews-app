@@ -19,17 +19,20 @@ export const FavoritesProvider = ({ children }) => {
     if (!isFavorite(post)) {
       setFavorites((prevState) => [...prevState, post]);
     } else {
-      const newList = favorites.filter((value) => value.id != post.id);
+      const newList = favorites.filter((item) => item.id !== post.id);
       setFavorites([...newList]);
     }
+    saveFavorite(favorites);
+  };
+
+  const replaceFavorite = (oldFavorite, newFavorite) => {
+    const index = favorites.indexOf(oldFavorite);
+    favorites[index] = newFavorite;
   };
 
   const isFavorite = (post: any) => {
-    if (favorites.length > 0) {
-      const exist = favorites.find((item) => item.id === post.id);
-      return !!exist;
-    }
-    return false;
+    const exist = favorites.find((item) => item.id === post.id);
+    return !!exist;
   };
 
   return (
@@ -38,6 +41,7 @@ export const FavoritesProvider = ({ children }) => {
         isFavorite,
         favorites,
         toggleFavorite,
+        replaceFavorite,
       }}
     >
       {children}

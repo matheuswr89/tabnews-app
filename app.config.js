@@ -5,8 +5,8 @@ const LIGHT_SPLASH = {
 };
 
 const DARK_SPLASH = {
-  image: "./assets/splash.png",
-  backgroundColor: "#000000",
+  image: "./assets/splash-dark.png",
+  backgroundColor: "#0D1117",
   resizeMode: "contain",
 };
 
@@ -23,10 +23,11 @@ const config = {
   name: "TabNews",
   slug: "tabnews",
   version: "1.0.2",
+  scheme: "tabnews",
   orientation: "portrait",
   icon: "./assets/icon.png",
-  userInterfaceStyle: "automatic",
   splash: LIGHT_SPLASH,
+  userInterfaceStyle: "light",
   updates: {
     fallbackToCacheTimeout: 0,
   },
@@ -36,15 +37,33 @@ const config = {
     supportsTablet: true,
     bundleIdentifier: "com.tabnews",
     buildNumber: "1.0.2",
+    userInterfaceStyle: "light",
   },
   android: {
     ...SHARED_SPLASH,
     package: "com.tabnews",
     versionCode: 2,
+    userInterfaceStyle: "light",
   },
   web: {
     icon: "./assets/icon.png",
     ...SHARED_SPLASH,
+  },
+  packagerOpts: {
+    config: "metro.config.js",
+    sourceExts: [
+      "expo.ts",
+      "expo.tsx",
+      "expo.js",
+      "expo.jsx",
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "wasm",
+      "svg",
+    ],
   },
 };
 

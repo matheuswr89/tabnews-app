@@ -15,7 +15,7 @@ import MarkdownView from "./Markdown";
 import OwnerInfo from "./OwnerInfo";
 import TabCoin from "./TabCoin";
 
-export default function Post({ value, loading }) {
+export default function Post({ value, loading, setDeleted }) {
   const [parent, setParent] = useState(null);
 
   const { colors } = useTheme();
@@ -71,7 +71,7 @@ export default function Post({ value, loading }) {
                 </Text>
               </View>
             )}
-            <OwnerInfo data={value} />
+            <OwnerInfo data={value} setDeleted={setDeleted} />
             {value.title && (
               <Text
                 style={{
@@ -80,12 +80,14 @@ export default function Post({ value, loading }) {
                   fontWeight: "900",
                   borderBottomColor: colors.text,
                   borderBottomWidth: 2,
+                  zIndex: -2,
                 }}
+                selectable
               >
                 {value.title}
               </Text>
             )}
-            <MarkdownView body={value.body} card={colors.background} />
+            <MarkdownView body={value.body} />
             {value.source_url && (
               <View style={[styles.sourceUrl, { borderTopColor: colors.text }]}>
                 <Icon name="link" size={15} color={colors.text} />
@@ -116,14 +118,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingLeft: 5,
-    minHeight: 70,
-    maxHeight: "100%",
     flexDirection: "row",
     top: 6,
   },
   post: {
     marginLeft: 10,
-    width: "90%",
+    width: "88%",
   },
   tabcoin: {
     marginLeft: 24,

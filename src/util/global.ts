@@ -46,7 +46,6 @@ export const global = StyleSheet.create({
   loginButtonContainer: {
     borderRadius: 5,
     paddingVertical: 8,
-    width: "100%",
     backgroundColor: "#2c974b",
     marginVertical: 16,
     height: 50,
@@ -88,6 +87,13 @@ export const markdownStyles = StyleSheet.create((props) => {
       borderBottomRightRadius: 8,
       borderWidth: 2,
       borderTopWidth: 0,
+      backgroundColor: props.colors.card,
+      borderColor: props.colors.text,
+    },
+    markdownContainerStyles: {
+      borderTopLeftRadius: 8,
+      borderTopRightRadius: 8,
+      borderWidth: 2,
       backgroundColor: props.colors.card,
       borderColor: props.colors.text,
     },
