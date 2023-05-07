@@ -47,9 +47,16 @@ export default function ActionsComments({ post, setIsEdit, setDeleted }) {
         anchor={
           <Icon
             name="ellipsis1"
-            size={30}
+            size={25}
             color={colors.text}
             onPress={showMenu}
+            style={{
+              borderWidth: 2,
+              borderColor: colors.border,
+              paddingLeft: 3,
+              paddingTop: 3,
+              borderRadius: 9,
+            }}
           />
         }
         onRequestClose={hideMenu}
