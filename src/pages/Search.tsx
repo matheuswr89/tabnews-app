@@ -1,21 +1,21 @@
-import { useNavigation } from "@react-navigation/native";
-import FlashList from "@shopify/flash-list/dist/FlashList";
-import axios from "axios";
 import { useCallback, useState } from "react";
 import { ActivityIndicator, RefreshControl, View } from "react-native";
-import EmptyList from "../components/EmptyList";
-import ListItem from "../components/ListItem";
-import SwitchComponent from "../components/SearchBar";
+import { ContentModel } from "../models/Model";
 import { search } from "../service/search";
 import { parseSearch } from "../util/parseSearch";
 
+import FlashList from "@shopify/flash-list/dist/FlashList";
+import axios from "axios";
+import EmptyList from "../components/EmptyList";
+import ListItem from "../components/ListItem";
+import SearchBar from "../components/SearchBar";
+
 export default function Search() {
-  const [value, setValue]: any = useState([]);
-  const [nextPageLink, setNextPageLink] = useState<string | undefined>("");
+  const [value, setValue]: any = useState<ContentModel[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [nextPageLink, setNextPageLink] = useState<string | undefined>("");
   const [loadingContent, setLoadingContent] = useState<boolean>(false);
-  const { push }: any = useNavigation();
-  const [refreshing, setRefreshing] = useState(false);
 
   const nextPageSearch = async () => {
     setLoading(true);
@@ -33,7 +33,7 @@ export default function Search() {
 
   return (
     <View style={{ width: "100%", height: "100%" }}>
-      <SwitchComponent
+      <SearchBar
         searchFunc={search}
         setLoadingContent={setLoadingContent}
         setValue={setValue}
@@ -45,8 +45,8 @@ export default function Search() {
           keyExtractor={(item, index) => {
             return item + index.toString();
           }}
-          renderItem={({ item, index }) => (
-            <ListItem index={index} post={item} push={push} />
+          renderItem={({ item, index }: any) => (
+            <ListItem index={index} post={item} />
           )}
           data={value}
           estimatedItemSize={1000}

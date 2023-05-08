@@ -1,11 +1,12 @@
-import {
-  isStringWebLink,
-  MarkdownEditor,
-} from "@matheuswr89/react-native-markdown-editor";
-
+import { isStringWebLink } from "@matheuswr89/react-native-markdown-editor";
 import { useRoute, useTheme } from "@react-navigation/native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useContext, useEffect, useState } from "react";
+import { showAlert } from "../hooks/showAlert";
+import { useContent } from "../hooks/useContent";
+import { NavigationPage } from "../models/PagesModels";
+import { deleteOrEditContent, postContent } from "../service/contents";
+import { global } from "../util/global";
+
 import {
   ActivityIndicator,
   Alert,
@@ -15,29 +16,24 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
+import MarkdownEditor from "../components/MarkdownEditor";
 import AuthContext from "../context/AuthContext";
 import ReloadContentContext from "../context/ReloadContentContext";
-import { colorScheme as scheme } from "../context/ThemeContext";
-import { showAlert } from "../hooks/showAlert";
-import { useContent } from "../hooks/useContent";
-import { deleteOrEditContent, postContent } from "../service/contents";
-import { global, markdownStyles } from "../util/global";
 
-export const CreatePost = ({
-  navigation,
-}: NativeStackScreenProps<any, any>) => {
+export const CreatePost = ({ navigation }: NavigationPage) => {
   const { colors } = useTheme();
-  const { mode, content }: any = useRoute().params;
-  const [isLoading, setIsLoading] = useState(false);
-  const isCreationMode = mode === "creation";
   const { toggleReload } = useContext(ReloadContentContext);
+  const { mode, content }: any = useRoute().params;
   const { user, logInUser } = useContext(AuthContext);
   const { deleteContent, saveContent, getContent } = useContent();
-  const { colorScheme } = scheme();
 
-  const [title, setTitle]: any = useState(content?.title || "");
-  const [body, setBody]: any = useState(content?.body || "");
-  const [source, setSource]: any = useState(content?.source_url || "");
+  const isCreationMode = mode === "creation";
+
+  const [body, setBody] = useState<string>(content?.body || "");
+  const [title, setTitle] = useState<string>(content?.title || "");
+  const [source, setSource] = useState<string>(content?.source_url || "");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const slug = isCreationMode
     ? `-new${content?.id || ""}`
@@ -145,21 +141,7 @@ export const CreatePost = ({
         placeholderTextColor="#000"
       />
       <View>
-        <MarkdownEditor
-          onMarkdownChange={onChangeText}
-          markdown={body}
-          placeholder="Escreva aqui..."
-          placeholderTextColor={colors.text}
-          textInputStyles={markdownStyles({ colors }).textInputStyles}
-          buttonContainerStyles={
-            markdownStyles({ colors }).buttonContainerStyles
-          }
-          buttonStyles={markdownStyles({ colors }).buttonStyles}
-          markdownViewStyles={
-            markdownStyles({ colors }).markdownContainerStyles
-          }
-          colorScheme={colorScheme}
-        />
+        <MarkdownEditor body={body} onChangeText={onChangeText} />
       </View>
       <TextInput
         value={source}

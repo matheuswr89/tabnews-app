@@ -1,6 +1,6 @@
 {
   "name": "tabnews-app",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",

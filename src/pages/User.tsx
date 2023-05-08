@@ -1,36 +1,39 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useRoute, useTheme } from "@react-navigation/native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import FlashList from "@shopify/flash-list/dist/FlashList";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { ActivityIndicator, RefreshControl, Text, View } from "react-native";
+import { ContentModel, UserModel } from "../models/Model";
+import { NavigationPage } from "../models/PagesModels";
+import { getUserContent } from "../service/contents";
+import { getUser } from "../service/user";
+
+import FlashList from "@shopify/flash-list/dist/FlashList";
 import uuid from "react-native-uuid";
 import IconsOcticons from "react-native-vector-icons/Octicons";
 import EmptyList from "../components/EmptyList";
 import ListItem from "../components/ListItem";
 import AuthContext from "../context/AuthContext";
 import ReloadContentContext from "../context/ReloadContentContext";
-import { getUserContent } from "../service/contents";
-import { getUser } from "../service/user";
 
 const Tabs = createMaterialTopTabNavigator();
 
-export default function User(props: NativeStackScreenProps<any, any>) {
+export default function User({ navigation }: NavigationPage) {
   const { user } = useContext(AuthContext);
   const { colors } = useTheme();
   const { params }: any = useRoute();
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [post, setPost] = useState([]);
-  const [comments, setComments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const { isReload } = useContext(ReloadContentContext);
-  const [page, setPage] = useState(1);
-  const [last, setLast] = useState(false);
+
+  const [page, setPage] = useState<number>(1);
+  const [post, setPost] = useState<ContentModel[]>([]);
+  const [last, setLast] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [comments, setComments] = useState<ContentModel[]>([]);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<UserModel>(null);
 
   useEffect(() => {
     if (!!params) {
-      props.navigation.setOptions({
+      navigation.setOptions({
         headerRight: null,
       });
     }
@@ -153,7 +156,9 @@ const List: any = ({
         keyExtractor={(item, index) => {
           return item + index.toString();
         }}
-        renderItem={({ item, index }) => <ListItem index={index} post={item} />}
+        renderItem={({ item, index }: any) => (
+          <ListItem index={index} post={item} />
+        )}
         data={array}
         estimatedItemSize={1000}
         onEndReached={!last && array.length > 10 ? loadPosts : null}

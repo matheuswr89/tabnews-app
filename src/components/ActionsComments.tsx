@@ -2,15 +2,20 @@ import { useNavigation, useTheme } from "@react-navigation/native";
 import { useContext, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Menu, MenuItem } from "react-native-material-menu";
+import { showAlert } from "../hooks/showAlert";
+import { ActionsCommentsInterface } from "../models/ComponentsModel";
+import { deleteOrEditContent } from "../service/contents";
 
 import Icon from "react-native-vector-icons/AntDesign";
 import IconMaterialIcons from "react-native-vector-icons/MaterialIcons";
 import IconOcticons from "react-native-vector-icons/Octicons";
 import ReloadContentContext from "../context/ReloadContentContext";
-import { showAlert } from "../hooks/showAlert";
-import { deleteOrEditContent } from "../service/contents";
 
-export default function ActionsComments({ post, setIsEdit, setDeleted }) {
+export default function ActionsComments({
+  post,
+  setIsEdit,
+  setDeleted,
+}: ActionsCommentsInterface) {
   const { colors } = useTheme();
   const { toggleReload } = useContext(ReloadContentContext);
   const navigation: any = useNavigation();

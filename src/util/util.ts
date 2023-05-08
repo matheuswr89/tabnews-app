@@ -1,3 +1,6 @@
+export const mailFormatValidator =
+  /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+
 export function time_ago(time: string) {
   const date: any = time ? new Date(time) : new Date();
   const now: any = new Date();

@@ -1,20 +1,23 @@
-import { MarkdownEditor } from "@matheuswr89/react-native-markdown-editor";
-import { Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
+import { Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { isUserLogged } from "../hooks/isLogged";
+import { showAlert } from "../hooks/showAlert";
+import { useContent } from "../hooks/useContent";
+import { GroupButtonInterface } from "../models/ComponentsModel";
+import { deleteOrEditContent, postContent } from "../service/contents";
+
 import Icon from "react-native-vector-icons/FontAwesome5";
 import AuthContext from "../context/AuthContext";
 import FavoritesContext from "../context/FavoritesContext";
 import ReloadContentContext from "../context/ReloadContentContext";
-import { colorScheme as scheme } from "../context/ThemeContext";
-import { isUserLogged } from "../hooks/isLogged";
-import { showAlert } from "../hooks/showAlert";
-import { useContent } from "../hooks/useContent";
-import { deleteOrEditContent, postContent } from "../service/contents";
-import { markdownStyles } from "../util/global";
+import MarkdownEditor from "./MarkdownEditor";
 
-export default function GroupButton({ content, isEdit, setIsEdit }: any) {
+export default function GroupButton({
+  content,
+  isEdit,
+  setIsEdit,
+}: GroupButtonInterface) {
   const { isFavorite, toggleFavorite } = useContext(FavoritesContext);
   const { toggleReload, isReload } = useContext(ReloadContentContext);
   const { colors } = useTheme();
@@ -24,7 +27,6 @@ export default function GroupButton({ content, isEdit, setIsEdit }: any) {
 
   const [isResponder, setIsResponder] = useState(false);
   const [text, setText] = useState(isEdit ? content.body : "");
-  const { colorScheme } = scheme();
 
   const parentId = content.parent_id;
   const url = `${content.owner_username}/${content.slug}`;
@@ -150,21 +152,7 @@ export default function GroupButton({ content, isEdit, setIsEdit }: any) {
         {(isResponder || isEdit) && (
           <>
             <View>
-              <MarkdownEditor
-                markdown={text}
-                onMarkdownChange={onTextChange}
-                placeholder="Escreva aqui..."
-                placeholderTextColor={colors.text}
-                textInputStyles={markdownStyles({ colors }).textInputStyles}
-                buttonContainerStyles={
-                  markdownStyles({ colors }).buttonContainerStyles
-                }
-                buttonStyles={markdownStyles({ colors }).buttonStyles}
-                markdownViewStyles={
-                  markdownStyles({ colors }).markdownContainerStyles
-                }
-                colorScheme={colorScheme}
-              />
+              <MarkdownEditor body={text} onChangeText={onTextChange} />
             </View>
             <View style={styles.container}>
               <TouchableOpacity

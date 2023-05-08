@@ -1,17 +1,19 @@
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { useContext } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
+import { isUserLogged } from "../hooks/isLogged";
+import { TabCoinInteface } from "../models/ComponentsModel";
+import { giveVote } from "../service/contents";
+
 import Icon from "react-native-vector-icons/MaterialIcons";
 import AuthContext from "../context/AuthContext";
 import ReloadContentContext from "../context/ReloadContentContext";
-import { isUserLogged } from "../hooks/isLogged";
-import { giveVote } from "../service/contents";
 
-export default function TabCoin({ data, color }: any) {
+export default function TabCoin({ data, color }: TabCoinInteface) {
   const { colors } = useTheme();
-  const { isLogged, logInUser } = useContext(AuthContext);
-  const { toggleReload } = useContext(ReloadContentContext);
   const { navigate }: any = useNavigation();
+  const { toggleReload } = useContext(ReloadContentContext);
+  const { isLogged, logInUser } = useContext(AuthContext);
 
   const tapTabcoin = (strategy: string) => {
     isUserLogged(isLogged, navigate);

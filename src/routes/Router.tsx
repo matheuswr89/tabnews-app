@@ -1,15 +1,33 @@
+import { useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HeaderIcons from "../components/HeaderIcons";
-import Content from "../pages/Content";
+import { useContext, useEffect } from "react";
+import { showAlert } from "../hooks/showAlert";
 import { CreateAccount } from "../pages/CreateAccount";
 import { CreatePost } from "../pages/CreatePost";
-import Home from "../pages/Home";
 import { Login } from "../pages/Login";
+
+import HeaderIcons from "../components/HeaderIcons";
+import AuthContext from "../context/AuthContext";
+import Content from "../pages/Content";
+import Home from "../pages/Home";
 import User from "../pages/User";
 
 const { Navigator, Screen } = createNativeStackNavigator();
 
 export function AppRoutes() {
+  const { navigate }: any = useNavigation();
+  const { isTokenExpired } = useContext(AuthContext);
+  useEffect(() => {
+    isTokenExpired().then((isExpired) => {
+      if (isExpired === true) {
+        showAlert({
+          title: "Sessão expirada!",
+          message: "Deseja logar novamente?",
+          onPressYes: () => navigate("Login"),
+        });
+      }
+    });
+  }, []);
   return (
     <Navigator initialRouteName="Buscar">
       <Screen
@@ -17,7 +35,7 @@ export function AppRoutes() {
         component={Home}
         options={{
           title: "TabNews",
-          headerRight: () => <HeaderIcons type={false} />,
+          headerRight: () => <HeaderIcons show={false} />,
         }}
       />
       <Screen
@@ -32,7 +50,7 @@ export function AppRoutes() {
         name="Perfil"
         component={User}
         options={{
-          headerRight: () => <HeaderIcons type={true} />,
+          headerRight: () => <HeaderIcons show={true} />,
         }}
       />
       <Screen name="CreateAccount" component={CreateAccount} />

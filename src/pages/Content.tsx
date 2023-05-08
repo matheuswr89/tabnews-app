@@ -1,29 +1,32 @@
-import { useNavigation, useTheme } from "@react-navigation/native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useRoute, useTheme } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
 import { RefreshControl, ScrollView, Text, View } from "react-native";
+import { ContentModel } from "../models/Model";
+import { NavigationPage } from "../models/PagesModels";
+import { getComments } from "../service/coments";
+import { getContent } from "../service/contents";
+
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Post from "../components/Post";
 import PostComments from "../components/PostComments";
 import ReloadContentContext from "../context/ReloadContentContext";
-import { getComments } from "../service/coments";
-import { getContent } from "../service/contents";
 
-export default function Content(props: NativeStackScreenProps<any, any>) {
-  const [refreshing, setRefreshing] = useState(false);
+export default function Content({ navigation }: NavigationPage) {
   const { colors } = useTheme();
-  const navigation = useNavigation();
   const { isReload } = useContext(ReloadContentContext);
-  const [value, setValue] = useState<any>(null);
-  const [comments, setComments] = useState([]);
-  const [loadingComments, setLoadingComments] = useState(false);
-  const [loadingPost, setLoadingPost] = useState(false);
-  const [deleted, setDeleted] = useState(false);
+  const { title, url }: any = useRoute().params;
+
+  const [value, setValue] = useState<ContentModel>(null);
+  const [deleted, setDeleted] = useState<boolean>(false);
+  const [comments, setComments] = useState<ContentModel[]>([]);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [loadingPost, setLoadingPost] = useState<boolean>(false);
+  const [loadingComments, setLoadingComments] = useState<boolean>(false);
 
   useEffect(() => {
     getPostContent();
-    props.navigation.setOptions({
-      title: props.route.params?.title || value?.title || "Comentário",
+    navigation.setOptions({
+      title: title || value?.title || "Comentário",
     });
   }, [isReload === true]);
 
@@ -39,14 +42,14 @@ export default function Content(props: NativeStackScreenProps<any, any>) {
       return;
     }
     setLoadingPost(true);
-    const response = await getContent(props.route.params?.url, navigation);
+    const response = await getContent(url, navigation);
     setLoadingPost(false);
     setValue(response);
     if (response) getCommentsInitial();
   };
   const getCommentsInitial = async () => {
     setLoadingComments(true);
-    const responseComments = await getComments(props.route.params?.url);
+    const responseComments = await getComments(url);
     setComments(responseComments);
     setLoadingComments(false);
   };

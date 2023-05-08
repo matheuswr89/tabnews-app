@@ -1,5 +1,9 @@
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import { PostInterface } from "../models/ComponentsModel";
+import { ContentModel } from "../models/Model";
+import { getParentContent } from "../service/contents";
+
 import {
   ActivityIndicator,
   Linking,
@@ -8,15 +12,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { getParentContent } from "../service/contents";
 import GroupButton from "./GroupButton";
-import MarkdownView from "./Markdown";
+import MarkdownView from "./MarkdownView";
 import OwnerInfo from "./OwnerInfo";
 import TabCoin from "./TabCoin";
 
-export default function Post({ value, loading, setDeleted }) {
-  const [parent, setParent] = useState(null);
+export default function Post({ value, loading, setDeleted }: PostInterface) {
+  const [parent, setParent] = useState<ContentModel>(null);
 
   const { colors } = useTheme();
   const { push }: any = useNavigation();

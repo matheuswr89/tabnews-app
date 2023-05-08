@@ -1,5 +1,6 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useNavigation, useTheme } from "@react-navigation/native";
+
 import Icon from "react-native-vector-icons/MaterialIcons";
 import FloatIcon from "../components/FloatIcon";
 import List from "./List";
@@ -23,8 +24,8 @@ export default function Home() {
         key={1}
         tabBarPosition="bottom"
         initialRouteName="Relevantes"
+        backBehavior="none"
         screenOptions={({ route }: any) => ({
-          tabBarOnPress: "navigation",
           tabBarIndicatorStyle: { backgroundColor: "#2c974b" },
           tabBarStyle: {
             paddingBottom: 5,

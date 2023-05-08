@@ -1,11 +1,17 @@
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { useContext } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import AuthContext from "../context/AuthContext";
+import { OwnerInfoInterface } from "../models/ComponentsModel";
 import { time_ago } from "../util/util";
+
+import AuthContext from "../context/AuthContext";
 import ActionsComments from "./ActionsComments";
 
-export default function OwnerInfo({ data, setIsEdit, setDeleted }: any) {
+export default function OwnerInfo({
+  data,
+  setIsEdit,
+  setDeleted,
+}: OwnerInfoInterface) {
   const { colors } = useTheme();
   const { push }: any = useNavigation();
   const { user } = useContext(AuthContext);

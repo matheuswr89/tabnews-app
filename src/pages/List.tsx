@@ -1,18 +1,22 @@
 import { FlashList } from "@shopify/flash-list";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { ActivityIndicator, RefreshControl, View } from "react-native";
-import EmptyList from "../components/EmptyList";
-import ListItem from "../components/ListItem";
-import FavoritesContext from "../context/FavoritesContext";
+import { ContentModel } from "../models/Model";
+import { ListModel } from "../models/PagesModels";
 import { getContent } from "../service/contents";
 import { getTopics } from "../service/topics";
 
-export default function List({ strategy }: any) {
+import EmptyList from "../components/EmptyList";
+import ListItem from "../components/ListItem";
+import FavoritesContext from "../context/FavoritesContext";
+
+export default function List({ strategy }: ListModel) {
+  const [page, setPage] = useState<number>(1);
+  const [value, setValue]: any = useState<ContentModel[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [value, setValue]: any = useState([]);
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
   const { favorites, replaceFavorite } = useContext(FavoritesContext);
-  const [page, setPage] = useState(1);
 
   useEffect(() => {
     loadPosts();
@@ -62,7 +66,7 @@ export default function List({ strategy }: any) {
         keyExtractor={(item, index) => {
           return item + index.toString();
         }}
-        renderItem={({ item, index }) => {
+        renderItem={({ item, index }: any) => {
           return <ListItem index={index} post={item} />;
         }}
         data={strategy === "favorites" ? favorites : value}

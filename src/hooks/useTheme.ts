@@ -9,7 +9,7 @@ export const useTheme = () => {
   };
 
   const getTheme = async (): Promise<any> => {
-    return await storage.getBoolean(THEME_KEY);
+    return await storage.getString(THEME_KEY);
   };
 
   return {

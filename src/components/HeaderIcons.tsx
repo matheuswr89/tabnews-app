@@ -2,12 +2,14 @@ import { useNavigation, useTheme } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
 import { Alert, DeviceEventEmitter, StyleSheet, Text } from "react-native";
 import { Menu, MenuDivider, MenuItem } from "react-native-material-menu";
+import { useTheme as personalTheme } from "../hooks/useTheme";
+import { HeaderIconsInterface } from "../models/ComponentsModel";
+
 import Icon from "react-native-vector-icons/FontAwesome5";
 import IconMaterial from "react-native-vector-icons/MaterialIcons";
 import AuthContext from "../context/AuthContext";
-import { useTheme as personalTheme } from "../hooks/useTheme";
 
-export default function HeaderIcons({ type }) {
+export default function HeaderIcons({ show }: HeaderIconsInterface) {
   const { colors } = useTheme();
   const { navigate }: any = useNavigation();
   const [mode, setMode] = useState(false);
@@ -44,7 +46,7 @@ export default function HeaderIcons({ type }) {
   const showMenu = () => setVisible(true);
 
   return (
-    !type && (
+    !show && (
       <Menu
         style={{ backgroundColor: colors.card }}
         visible={visible}

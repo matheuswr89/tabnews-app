@@ -1,19 +1,9 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { AuthContextProps } from "../models/ContextModel";
+import { UserModel } from "../models/Model";
+
 import api from "../service/api";
-
-interface AuthContextProps {
-  user: any;
-  isLogged: boolean;
-
-  signIn(email: string, password: string): Promise<boolean>;
-
-  signOut(): void;
-
-  signUp(username: string, email: string, password: string): Promise<void>;
-
-  logInUser(): void;
-}
 
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
 
@@ -29,11 +19,7 @@ export const AuthProvider = ({ children }) => {
     getUser,
   } = useAuth();
 
-  const [user, setUser] = useState<any | null>(null);
-
-  useEffect(() => {
-    isTokenExpired();
-  }, []);
+  const [user, setUser] = useState<UserModel>(null);
 
   const isTokenExpired = async () => {
     const expireAt = await getExpireAt();
@@ -45,7 +31,9 @@ export const AuthProvider = ({ children }) => {
       if (diffInMs > 0) {
         setUser(await getUser());
       }
+      return !(diffInMs > 0);
     }
+    return undefined;
   };
 
   const signIn = async (email: string, password: string) => {
@@ -94,6 +82,7 @@ export const AuthProvider = ({ children }) => {
         signOut,
         signUp,
         logInUser,
+        isTokenExpired,
       }}
     >
       {children}

@@ -1,16 +1,12 @@
 import { createContext, useState } from "react";
+import { ReloadContentContextProps } from "../models/ContextModel";
 
-interface ReloadContentContext {
-  isReload: boolean;
-  toggleReload: () => void;
-}
-
-const ReloadContentContext = createContext<ReloadContentContext>(
-  {} as ReloadContentContext
+const ReloadContentContext = createContext<ReloadContentContextProps>(
+  {} as ReloadContentContextProps
 );
 
 export const ReloadContentProvider = ({ children }) => {
-  const [isReload, setIsReload] = useState(false);
+  const [isReload, setIsReload] = useState<boolean>(false);
 
   const toggleReload = () => {
     setIsReload(!isReload);

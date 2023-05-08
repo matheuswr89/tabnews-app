@@ -10,21 +10,22 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { NavigationPage } from "../models/PagesModels";
+import { global } from "../util/global";
+import { mailFormatValidator } from "../util/util";
+
 import IconMaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AuthContext from "../context/AuthContext";
-import { global } from "../util/global";
 
-const mailFormatValidator = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-
-export const CreateAccount = ({ navigation }: any) => {
+export const CreateAccount = ({ navigation }: NavigationPage) => {
   const { colors } = useTheme();
   const { signUp } = useContext(AuthContext);
 
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const handleSignUp = async () => {
     Keyboard.dismiss();

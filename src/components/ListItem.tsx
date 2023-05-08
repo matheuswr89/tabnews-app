@@ -1,9 +1,11 @@
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import uuid from "react-native-uuid";
+import { ListItemInterface } from "../models/ComponentsModel";
 import { time_ago } from "../util/util";
 
-export default function ListItem({ post, index }) {
+import uuid from "react-native-uuid";
+
+export default function ListItem({ post, index }: ListItemInterface) {
   const { colors } = useTheme();
   const { push }: any = useNavigation();
 

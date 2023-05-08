@@ -1,7 +1,13 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
+import { FloatIconInterface } from "../models/ComponentsModel";
+
 import IconMaterialCommunity from "react-native-vector-icons/MaterialCommunityIcons";
 
-export default function FloatIcon({ name, color, onPress }) {
+export default function FloatIcon({
+  name,
+  color,
+  onPress,
+}: FloatIconInterface) {
   return (
     <TouchableOpacity
       style={[styles.container, { backgroundColor: color }]}

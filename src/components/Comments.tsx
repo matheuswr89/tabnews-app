@@ -1,14 +1,16 @@
-import { StyleSheet, View } from "react-native";
-import uuid from "react-native-uuid";
-
 import { useTheme } from "@react-navigation/native";
 import { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { CommentsInterface } from "../models/ComponentsModel";
+import { ContentModel } from "../models/Model";
+
+import uuid from "react-native-uuid";
 import GroupButton from "./GroupButton";
-import MarkdownView from "./Markdown";
+import MarkdownView from "./MarkdownView";
 import OwnerInfo from "./OwnerInfo";
 import TabCoin from "./TabCoin";
 
-export default function Comment({ comment }: any) {
+export default function Comment({ comment }: CommentsInterface) {
   const { colors } = useTheme();
   const [isEdit, setIsEdit] = useState(false);
 
@@ -22,8 +24,8 @@ export default function Comment({ comment }: any) {
       <MarkdownView body={comment.body} />
       <GroupButton content={comment} isEdit={isEdit} setIsEdit={setIsEdit} />
       {comment.children &&
-        comment.children.map((reply: any) => (
-          <Comment key={`comment${uuid.v4()}}`} comment={reply} />
+        comment.children.map((reply: ContentModel) => (
+          <Comment comment={reply} key={`comment${uuid.v4()}${comment.slug}`} />
         ))}
     </View>
   );

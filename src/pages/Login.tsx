@@ -1,5 +1,9 @@
 import { useTheme } from "@react-navigation/native";
 import { useContext, useState } from "react";
+import { NavigationPage } from "../models/PagesModels";
+import { global } from "../util/global";
+import { mailFormatValidator } from "../util/util";
+
 import {
   ActivityIndicator,
   Alert,
@@ -12,20 +16,18 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+
 import IconMaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AuthContext from "../context/AuthContext";
-import { global } from "../util/global";
 
-const mailFormatValidator = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-
-export const Login = ({ navigation }: any) => {
+export const Login = ({ navigation }: NavigationPage) => {
   const { colors } = useTheme();
   const { signIn } = useContext(AuthContext);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const handleSignIn = () => {
     Keyboard.dismiss();

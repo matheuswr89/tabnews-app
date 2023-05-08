@@ -1,11 +1,16 @@
 import { createContext, useEffect, useState } from "react";
 import { useFavorites } from "../hooks/useFavorites";
+import { FavoritesContextProps } from "../models/ContextModel";
+import { ContentModel } from "../models/Model";
 
-const FavoritesContext = createContext<any>({});
+const FavoritesContext = createContext<FavoritesContextProps>(
+  {} as FavoritesContextProps
+);
 
 export const FavoritesProvider = ({ children }) => {
-  const [favorites, setFavorites] = useState([]);
   const { getFavorite, saveFavorite } = useFavorites();
+
+  const [favorites, setFavorites] = useState<ContentModel[]>([]);
 
   useEffect(() => {
     getFavorite().then((data: any) => setFavorites(data));
@@ -15,7 +20,7 @@ export const FavoritesProvider = ({ children }) => {
     saveFavorite(favorites);
   }, [favorites]);
 
-  const toggleFavorite = (post) => {
+  const toggleFavorite = (post: ContentModel) => {
     if (!isFavorite(post)) {
       setFavorites((prevState) => [...prevState, post]);
     } else {
@@ -25,12 +30,15 @@ export const FavoritesProvider = ({ children }) => {
     saveFavorite(favorites);
   };
 
-  const replaceFavorite = (oldFavorite, newFavorite) => {
+  const replaceFavorite = (
+    oldFavorite: ContentModel,
+    newFavorite: ContentModel
+  ) => {
     const index = favorites.indexOf(oldFavorite);
     favorites[index] = newFavorite;
   };
 
-  const isFavorite = (post: any) => {
+  const isFavorite = (post: ContentModel) => {
     const exist = favorites.find((item) => item.id === post.id);
     return !!exist;
   };

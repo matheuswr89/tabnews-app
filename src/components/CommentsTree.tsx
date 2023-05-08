@@ -1,10 +1,12 @@
 import { useTheme } from "@react-navigation/native";
-import React from "react";
 import { StyleSheet, View } from "react-native";
+import { CommentsTreeInterface } from "../models/ComponentsModel";
+
+import React from "react";
 import uuid from "react-native-uuid";
 import Comment from "./Comments";
 
-export default function CommentTree({ comments }: any) {
+export default function CommentTree({ comments }: CommentsTreeInterface) {
   const { colors } = useTheme();
   return (
     <View style={styles.container} key={`CommentTree${uuid.v4()}}`}>

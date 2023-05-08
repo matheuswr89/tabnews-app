@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Keyboard, StyleSheet, TextInput, View } from "react-native";
+import { SearchBarInterface } from "../models/ComponentsModel";
 
-const SwitchComponent = ({
+const SearchBar = ({
   searchFunc,
   setLoadingContent,
   setValue,
   setNextPageLink,
-}: any) => {
-  const [search, setSearch] = useState("");
+}: SearchBarInterface) => {
+  const [search, setSearch] = useState<string>("");
   const updateSearch = (search: string) => {
     setSearch(search);
   };
@@ -55,4 +56,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SwitchComponent;
+export default SearchBar;
