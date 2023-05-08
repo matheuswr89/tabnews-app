@@ -17,6 +17,7 @@ import {
 } from "react-native";
 import AuthContext from "../context/AuthContext";
 import ReloadContentContext from "../context/ReloadContentContext";
+import { colorScheme as scheme } from "../context/ThemeContext";
 import { showAlert } from "../hooks/showAlert";
 import { useContent } from "../hooks/useContent";
 import { deleteOrEditContent, postContent } from "../service/contents";
@@ -32,12 +33,15 @@ export const CreatePost = ({
   const { toggleReload } = useContext(ReloadContentContext);
   const { user, logInUser } = useContext(AuthContext);
   const { deleteContent, saveContent, getContent } = useContent();
+  const { colorScheme } = scheme();
 
   const [title, setTitle]: any = useState(content?.title || "");
   const [body, setBody]: any = useState(content?.body || "");
   const [source, setSource]: any = useState(content?.source_url || "");
 
-  const slug = isCreationMode ? "-new" : "-edit";
+  const slug = isCreationMode
+    ? `-new${content?.id || ""}`
+    : `-edit${content?.id || ""}`;
 
   useEffect(() => {
     getContent(slug).then((res) => {
@@ -108,6 +112,18 @@ export const CreatePost = ({
     setBody(text);
   };
 
+  const onChangeTextSource = (text, tipo) => {
+    const values = {
+      body,
+      source: tipo === "source" ? text : source,
+      title: tipo === "title" ? text : title,
+    };
+    saveContent(slug, values);
+    if (tipo === "source") setSource(text);
+    else setTitle(text);
+    console.log(text);
+  };
+
   const cancelButton = () => {
     showAlert({
       title: "Deseja realmente cancelar?",
@@ -120,27 +136,34 @@ export const CreatePost = ({
   };
 
   return (
-    <ScrollView style={{ marginHorizontal: 10, height: "100%" }}>
+    <ScrollView style={{ marginHorizontal: 10 }} showsVerticalScrollIndicator>
       <TextInput
         value={title}
-        onChangeText={setTitle}
+        onChangeText={(e) => onChangeTextSource(e, "title")}
         placeholder={"Título"}
         style={[global.input]}
         placeholderTextColor="#000"
       />
-      <MarkdownEditor
-        onMarkdownChange={onChangeText}
-        markdown={body}
-        placeholder="Escreva aqui..."
-        placeholderTextColor={colors.text}
-        textInputStyles={markdownStyles({ colors }).textInputStyles}
-        buttonContainerStyles={markdownStyles({ colors }).buttonContainerStyles}
-        buttonStyles={markdownStyles({ colors }).buttonStyles}
-        markdownViewStyles={markdownStyles({ colors }).markdownContainerStyles}
-      />
+      <View>
+        <MarkdownEditor
+          onMarkdownChange={onChangeText}
+          markdown={body}
+          placeholder="Escreva aqui..."
+          placeholderTextColor={colors.text}
+          textInputStyles={markdownStyles({ colors }).textInputStyles}
+          buttonContainerStyles={
+            markdownStyles({ colors }).buttonContainerStyles
+          }
+          buttonStyles={markdownStyles({ colors }).buttonStyles}
+          markdownViewStyles={
+            markdownStyles({ colors }).markdownContainerStyles
+          }
+          colorScheme={colorScheme}
+        />
+      </View>
       <TextInput
         value={source}
-        onChangeText={setSource}
+        onChangeText={(e) => onChangeTextSource(e, "source")}
         placeholder={"Fonte (opcional)"}
         style={[global.input]}
         keyboardType={"url"}
@@ -155,14 +178,11 @@ export const CreatePost = ({
       >
         <TouchableOpacity
           onPress={enviarPost}
-          style={[
-            global.loginButtonContainer,
-            { width: isCreationMode ? 100 : 150 },
-          ]}
+          style={[global.loginButtonContainer, { width: 120 }]}
         >
           {!isLoading && (
             <Text style={global.loginButton}>
-              {isCreationMode ? "Publicar" : "Salvar alterações"}
+              {isCreationMode ? "Publicar" : "Atualizar"}
             </Text>
           )}
           {isLoading && <ActivityIndicator size="large" />}

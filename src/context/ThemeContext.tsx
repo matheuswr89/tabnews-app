@@ -1,4 +1,6 @@
 import { Theme } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import { useTheme } from "../hooks/useTheme";
 
 const DarkTheme: Theme = {
   dark: true,
@@ -22,6 +24,18 @@ const DefaultTheme: Theme = {
     border: "rgb(227, 228, 230)",
     notification: "rgb(255, 59, 48)",
   },
+};
+
+export const colorScheme = () => {
+  const [colorScheme, setScheme] = useState<any>("ligth");
+  const { getTheme } = useTheme();
+  useEffect(() => {
+    async function changeTheme() {
+      setScheme((await getTheme()) ? "ligth" : "dark");
+    }
+    changeTheme();
+  }, []);
+  return { colorScheme };
 };
 
 export { DarkTheme, DefaultTheme };

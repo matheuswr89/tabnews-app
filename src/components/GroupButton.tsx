@@ -7,6 +7,7 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import AuthContext from "../context/AuthContext";
 import FavoritesContext from "../context/FavoritesContext";
 import ReloadContentContext from "../context/ReloadContentContext";
+import { colorScheme as scheme } from "../context/ThemeContext";
 import { isUserLogged } from "../hooks/isLogged";
 import { showAlert } from "../hooks/showAlert";
 import { useContent } from "../hooks/useContent";
@@ -23,6 +24,7 @@ export default function GroupButton({ content, isEdit, setIsEdit }: any) {
 
   const [isResponder, setIsResponder] = useState(false);
   const [text, setText] = useState(isEdit ? content.body : "");
+  const { colorScheme } = scheme();
 
   const parentId = content.parent_id;
   const url = `${content.owner_username}/${content.slug}`;
@@ -147,20 +149,23 @@ export default function GroupButton({ content, isEdit, setIsEdit }: any) {
       <View>
         {(isResponder || isEdit) && (
           <>
-            <MarkdownEditor
-              markdown={text}
-              onMarkdownChange={onTextChange}
-              placeholder="Escreva aqui..."
-              placeholderTextColor={colors.text}
-              textInputStyles={markdownStyles({ colors }).textInputStyles}
-              buttonContainerStyles={
-                markdownStyles({ colors }).buttonContainerStyles
-              }
-              buttonStyles={markdownStyles({ colors }).buttonStyles}
-              markdownViewStyles={
-                markdownStyles({ colors }).markdownContainerStyles
-              }
-            />
+            <View>
+              <MarkdownEditor
+                markdown={text}
+                onMarkdownChange={onTextChange}
+                placeholder="Escreva aqui..."
+                placeholderTextColor={colors.text}
+                textInputStyles={markdownStyles({ colors }).textInputStyles}
+                buttonContainerStyles={
+                  markdownStyles({ colors }).buttonContainerStyles
+                }
+                buttonStyles={markdownStyles({ colors }).buttonStyles}
+                markdownViewStyles={
+                  markdownStyles({ colors }).markdownContainerStyles
+                }
+                colorScheme={colorScheme}
+              />
+            </View>
             <View style={styles.container}>
               <TouchableOpacity
                 style={[styles.button, { borderColor: "#21c5f7" }]}

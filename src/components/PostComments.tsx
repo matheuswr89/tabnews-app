@@ -23,20 +23,23 @@ export default function PostComments({ comments, loading, loadingPost }) {
           card={colors.card}
         />
       )}
-      {comments.length > 10 && numComments <= comments.length && (
-        <TouchableOpacity
-          onPress={getMoreComments}
-          style={[
-            global.loginButtonContainer,
-            { marginTop: -20, width: "90%", marginHorizontal: 20 },
-          ]}
-        >
-          {!loadingButton && (
-            <Text style={global.loginButton}>Carregar mais comentários</Text>
-          )}
-          {loadingButton && <ActivityIndicator size="large" />}
-        </TouchableOpacity>
-      )}
+      {!loadingPost &&
+        !loading &&
+        comments.length > 5 &&
+        numComments <= comments.length && (
+          <TouchableOpacity
+            onPress={getMoreComments}
+            style={[
+              global.loginButtonContainer,
+              { marginTop: -20, width: "90%", marginHorizontal: 20 },
+            ]}
+          >
+            {!loadingButton && (
+              <Text style={global.loginButton}>Carregar mais comentários</Text>
+            )}
+            {loadingButton && <ActivityIndicator size="large" />}
+          </TouchableOpacity>
+        )}
       {!loadingPost && loading && <ActivityIndicator size="large" />}
     </View>
   );
