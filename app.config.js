@@ -22,7 +22,7 @@ const SHARED_SPLASH = {
 const config = {
   name: "TabNews",
   slug: "tabnews",
-  version: "1.0.5",
+  version: "1.0.6",
   scheme: "tabnews",
   orientation: "portrait",
   icon: "./assets/icon.png",
@@ -36,14 +36,12 @@ const config = {
     ...SHARED_SPLASH,
     supportsTablet: true,
     bundleIdentifier: "com.tabnews",
-    buildNumber: "1.0.5",
-    userInterfaceStyle: "light",
+    buildNumber: "1.0.6",
   },
   android: {
     ...SHARED_SPLASH,
     package: "com.tabnews",
-    versionCode: 5,
-    userInterfaceStyle: "light",
+    versionCode: 6,
   },
   web: {
     icon: "./assets/icon.png",

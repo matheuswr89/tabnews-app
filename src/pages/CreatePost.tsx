@@ -117,7 +117,6 @@ export const CreatePost = ({ navigation }: NavigationPage) => {
     saveContent(slug, values);
     if (tipo === "source") setSource(text);
     else setTitle(text);
-    console.log(text);
   };
 
   const cancelButton = () => {

@@ -1,18 +1,10 @@
 import { parseHTML } from "@matheuswr89/react-native-markdown-editor";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { Fragment, ReactNode } from "react";
-import { SvgUri } from "react-native-svg";
 import { colorScheme as scheme } from "../context/ThemeContext";
 import { MarkdownViewInterface } from "../models/ComponentsModel";
 
-import {
-  ImageStyle,
-  Linking,
-  Text,
-  TextStyle,
-  TouchableHighlight,
-  View,
-} from "react-native";
+import { Linking, Text, TextStyle, View } from "react-native";
 import {
   Renderer,
   RendererInterface,
@@ -20,7 +12,6 @@ import {
   useMarkdownHookOptions,
 } from "react-native-marked";
 
-import * as mime from "react-native-mime-types";
 import uuid from "react-native-uuid";
 
 class CustomRenderer extends Renderer implements RendererInterface {
@@ -29,6 +20,14 @@ class CustomRenderer extends Renderer implements RendererInterface {
     super();
     this.push = push;
   }
+  custom(
+    identifier: string,
+    raw: string,
+    children?: ReactNode[],
+    args?: Record<string, unknown>
+  ): ReactNode {
+    throw new Error("Method not implemented.");
+  }
 
   link(
     children: string | ReactNode[],
@@ -36,11 +35,19 @@ class CustomRenderer extends Renderer implements RendererInterface {
     styles?: TextStyle
   ): ReactNode {
     const onPressAction = () => {
-      if (href.includes("https://www.tabnews.com.br/"))
-        this.push("Content", {
-          url: href.split("https://www.tabnews.com.br/")[1],
-        });
-      else Linking.openURL(href);
+      if (href.includes("https://www.tabnews.com.br/")) {
+        let hrefSplit = href.split("https://www.tabnews.com.br/")[1];
+        let hrefLength = hrefSplit.split("/").length;
+        if (hrefLength === 1) {
+          this.push("Perfil", {
+            name: hrefSplit,
+          });
+        } else if (hrefLength === 2) {
+          this.push("Content", {
+            url: hrefSplit,
+          });
+        }
+      } else Linking.openURL(href);
     };
     return (
       <Text
@@ -53,29 +60,6 @@ class CustomRenderer extends Renderer implements RendererInterface {
       >
         {children}
       </Text>
-    );
-  }
-  linkImage(
-    href: string,
-    imageUrl: string,
-    alt?: string,
-    style?: ImageStyle
-  ): ReactNode {
-    const imageNode = this.image(imageUrl, alt, style);
-    const mimeType = mime.lookup(imageUrl);
-    return (
-      <TouchableHighlight
-        accessibilityRole="link"
-        accessibilityHint="Opens in a new window"
-        onPress={() => Linking.openURL(href)}
-        key={this.getKey()}
-      >
-        {mimeType.toString().includes("image/svg") ? (
-          <SvgUri uri={imageUrl} />
-        ) : (
-          imageNode
-        )}
-      </TouchableHighlight>
     );
   }
 }

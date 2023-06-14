@@ -26,9 +26,15 @@ export default function Content({ navigation }: NavigationPage) {
   useEffect(() => {
     getPostContent();
     navigation.setOptions({
-      title: title || value?.title || "Comentário",
+      title: title || "Comentário",
     });
   }, [isReload === true]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: value?.title || "Comentário",
+    });
+  }, [value]);
 
   const getPostContent = async () => {
     setComments([]);

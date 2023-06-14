@@ -36,6 +36,7 @@ export const FavoritesProvider = ({ children }) => {
   ) => {
     const index = favorites.indexOf(oldFavorite);
     favorites[index] = newFavorite;
+    saveFavorite(favorites);
   };
 
   const isFavorite = (post: ContentModel) => {

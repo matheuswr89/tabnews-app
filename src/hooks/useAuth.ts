@@ -44,6 +44,12 @@ export const useAuth = () => {
     await AsyncStorage.removeItem(AUTH_USER_KEY);
   };
 
+  const deleteAll = async () => {
+    await AsyncStorage.removeItem(AUTH_USER_KEY);
+    await AsyncStorage.removeItem(EXPIRE_AT_KEY);
+    await AsyncStorage.removeItem(AUTH_TOKEN_KEY);
+  };
+
   return {
     deleteToken,
     getToken,
@@ -54,5 +60,6 @@ export const useAuth = () => {
     saveExpireAt,
     deleteExpireAt,
     getExpireAt,
+    deleteAll,
   };
 };
