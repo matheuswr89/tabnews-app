@@ -29,15 +29,17 @@ const DefaultTheme: Theme = {
 
 export const colorScheme = () => {
   const { getTheme } = useTheme();
+
   const [colorScheme, setScheme] = useState<ColorSchemeName>("light");
 
   useEffect(() => {
-    async function changeTheme() {
-      setScheme((await getTheme()) ? "light" : "dark");
-    }
     changeTheme();
   }, []);
 
+  async function changeTheme() {
+    const theme = await getTheme();
+    if (theme !== undefined) setScheme(!theme ? "light" : "dark");
+  }
   return { colorScheme };
 };
 

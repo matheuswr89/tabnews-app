@@ -12,9 +12,9 @@ import AuthContext from "../context/AuthContext";
 export default function HeaderIcons({ show }: HeaderIconsInterface) {
   const { colors } = useTheme();
   const { navigate }: any = useNavigation();
-  const [mode, setMode] = useState(false);
+  const [mode, setMode] = useState(true);
   const { isLogged, signOut } = useContext(AuthContext);
-  const { getTheme } = personalTheme();
+  const { getTheme, saveTheme } = personalTheme();
 
   const signOutConfirm = () => {
     Alert.alert("Deseja realmente sair?", "", [
@@ -30,11 +30,16 @@ export default function HeaderIcons({ show }: HeaderIconsInterface) {
   };
 
   useEffect(() => {
-    async function changeTheme() {
-      setMode(!(await getTheme()));
-    }
     changeTheme();
   }, []);
+
+  async function changeTheme() {
+    const theme = await getTheme();
+    if (theme !== undefined) {
+      setMode(!theme);
+    }
+  }
+
   const navigateTo = () => {
     if (!isLogged) navigate("Login");
     else navigate("Perfil");
@@ -82,17 +87,18 @@ export default function HeaderIcons({ show }: HeaderIconsInterface) {
           onPress={() => {
             hideMenu();
             setMode((value) => !value);
+            saveTheme(mode);
             DeviceEventEmitter.emit("changeTheme", mode);
           }}
         >
           <Text style={{ color: colors.text, fontSize: 19, lineHeight: 22 }}>
             <Icon
-              name={mode ? "sun" : "moon"}
+              name={!mode ? "sun" : "moon"}
               color={colors.text}
               solid={true}
               style={styles.icon}
             />
-            {mode ? "  Light" : "  Dark"}
+            {!mode ? "  Light" : "  Dark"}
           </Text>
         </MenuItem>
         {isLogged && (

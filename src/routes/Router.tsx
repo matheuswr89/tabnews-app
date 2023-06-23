@@ -8,6 +8,7 @@ import { Login } from "../pages/Login";
 
 import HeaderIcons from "../components/HeaderIcons";
 import AuthContext from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import Content from "../pages/Content";
 import Home from "../pages/Home";
 import User from "../pages/User";
@@ -17,6 +18,7 @@ const { Navigator, Screen } = createNativeStackNavigator();
 export function AppRoutes() {
   const { navigate }: any = useNavigation();
   const { isTokenExpired } = useContext(AuthContext);
+  const { deleteAll } = useAuth();
   useEffect(() => {
     isTokenExpired().then((isExpired) => {
       if (isExpired === true) {
@@ -24,6 +26,7 @@ export function AppRoutes() {
           title: "Sessão expirada!",
           message: "Deseja logar novamente?",
           onPressYes: () => navigate("Login"),
+          onPressNo: () => deleteAll(),
         });
       }
     });

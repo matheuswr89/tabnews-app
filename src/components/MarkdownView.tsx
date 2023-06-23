@@ -26,7 +26,7 @@ class CustomRenderer extends Renderer implements RendererInterface {
     children?: ReactNode[],
     args?: Record<string, unknown>
   ): ReactNode {
-    throw new Error("Method not implemented.");
+    return;
   }
 
   link(

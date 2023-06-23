@@ -14,15 +14,17 @@ export default function App() {
   const { getTheme, saveTheme } = useTheme();
   const [mode, setMode]: any = useState(false);
   const backgroundStyle = {
-    backgroundColor: !mode ? DarkTheme.colors.card : DefaultTheme.colors.card,
+    backgroundColor: !mode ? DefaultTheme.colors.card : DarkTheme.colors.card,
   };
 
   useEffect(() => {
-    async function changeTheme() {
-      setMode(await getTheme());
-    }
     changeTheme();
   }, []);
+
+  async function changeTheme() {
+    const theme = await getTheme();
+    if (theme !== undefined) setMode(theme);
+  }
 
   function handler(arg) {
     setMode(arg);
@@ -35,10 +37,10 @@ export default function App() {
     <AuthProvider>
       <FavoritesProvider>
         <ReloadContentProvider>
-          <NavigationContainer theme={!mode ? DarkTheme : DefaultTheme}>
+          <NavigationContainer theme={!mode ? DefaultTheme : DarkTheme}>
             <SafeAreaView style={{ height: "100%" }}>
               <ExpoStatusBar
-                style={!mode ? "light" : "dark"}
+                style={mode ? "light" : "dark"}
                 backgroundColor={backgroundStyle.backgroundColor}
               />
               <AppRoutes />

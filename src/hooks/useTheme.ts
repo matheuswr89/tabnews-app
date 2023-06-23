@@ -1,15 +1,18 @@
-import { MMKV } from "react-native-mmkv";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const storage = new MMKV();
 const THEME_KEY = "@tabnews-app:THEME";
 
 export const useTheme = () => {
   const saveTheme = async (theme) => {
-    storage.set(THEME_KEY, theme);
+    await AsyncStorage.setItem(THEME_KEY, theme + "");
   };
 
   const getTheme = async (): Promise<any> => {
-    return await storage.getString(THEME_KEY);
+    const theme = await AsyncStorage.getItem(THEME_KEY);
+    if (theme !== null) {
+      return theme === "false" ? false : true;
+    }
+    return undefined;
   };
 
   return {

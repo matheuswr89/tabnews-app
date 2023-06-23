@@ -1,6 +1,6 @@
 const LIGHT_SPLASH = {
   image: "./assets/splash.png",
-  backgroundColor: "#FFFFFF",
+  backgroundColor: "#F2F2F2",
   resizeMode: "contain",
 };
 
@@ -22,12 +22,12 @@ const SHARED_SPLASH = {
 const config = {
   name: "TabNews",
   slug: "tabnews",
-  version: "1.0.6",
+  version: "1.0.7",
   scheme: "tabnews",
   orientation: "portrait",
   icon: "./assets/icon.png",
   splash: LIGHT_SPLASH,
-  userInterfaceStyle: "light",
+  userInterfaceStyle: "automatic",
   updates: {
     fallbackToCacheTimeout: 0,
   },
@@ -36,12 +36,12 @@ const config = {
     ...SHARED_SPLASH,
     supportsTablet: true,
     bundleIdentifier: "com.tabnews",
-    buildNumber: "1.0.6",
+    buildNumber: "1.0.7",
   },
   android: {
     ...SHARED_SPLASH,
     package: "com.tabnews",
-    versionCode: 6,
+    versionCode: 7,
   },
   web: {
     icon: "./assets/icon.png",

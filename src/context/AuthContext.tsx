@@ -25,14 +25,12 @@ export const AuthProvider = ({ children }) => {
   const isTokenExpired = async () => {
     const expireAt = await getExpireAt();
     if (expireAt) {
-      console.log(expireAt);
       const date: any = new Date();
       const dateExpireAt: any = new Date(expireAt);
       const diffInMs = dateExpireAt - date;
 
       if (diffInMs > 0) {
         setUser(await getUser());
-        deleteAll();
       }
       return !(diffInMs > 0);
     }
