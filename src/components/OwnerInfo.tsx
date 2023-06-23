@@ -28,10 +28,11 @@ export default function OwnerInfo({
         flexDirection: "row",
         width: "100%",
         zIndex: 300,
-        marginBottom: 4,
+        marginBottom: isCommentUser ? 4 : 0,
+        paddingTop: 3,
       }}
     >
-      <View style={styles.ownerInfo}>
+      <View style={[styles.ownerInfo, { marginBottom: isCommentUser ? 4 : 1 }]}>
         <TouchableOpacity style={styles.owner} onPress={redirectToUserPage}>
           <Text>{data?.owner_username}</Text>
         </TouchableOpacity>
@@ -63,10 +64,9 @@ export const styles = StyleSheet.create({
     borderRadius: 3,
   },
   ownerInfo: {
-    padding: 2,
+    paddingTop: 3,
     flexDirection: "row",
     alignItems: "center",
     marginLeft: 3,
-    marginBottom: 4,
   },
 });

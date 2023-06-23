@@ -11,7 +11,7 @@ const DarkTheme: Theme = {
     card: "rgb(22, 27, 34)",
     text: "rgb(230, 237, 243)",
     border: "rgb(48, 54, 61)",
-    notification: "rgb(255, 69, 58)",
+    notification: "#161b22",
   },
 };
 
@@ -23,7 +23,7 @@ const DefaultTheme: Theme = {
     card: "rgb(255, 255, 255)",
     text: "rgb(28, 28, 30)",
     border: "rgb(227, 228, 230)",
-    notification: "rgb(255, 59, 48)",
+    notification: "#f6f8fa",
   },
 };
 

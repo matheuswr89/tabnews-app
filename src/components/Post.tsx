@@ -80,7 +80,7 @@ export default function Post({ value, loading, setDeleted }: PostInterface) {
               <Text
                 style={{
                   color: colors.text,
-                  fontSize: 20,
+                  fontSize: 24,
                   fontWeight: "900",
                   borderBottomColor: colors.text,
                   borderBottomWidth: 2,
