@@ -5,6 +5,7 @@ import { CommentsInterface } from "../models/ComponentsModel";
 import { ContentModel } from "../models/Model";
 
 import uuid from "react-native-uuid";
+import { replaceAll } from "../util/util";
 import GroupButton from "./GroupButton";
 import MarkdownView from "./MarkdownView";
 import OwnerInfo from "./OwnerInfo";
@@ -21,7 +22,9 @@ export default function Comment({ comment }: CommentsInterface) {
     >
       <TabCoin data={comment} color={colors.card} />
       <OwnerInfo data={comment} setIsEdit={setIsEdit} />
-      <MarkdownView body={comment.body} />
+      <MarkdownView
+        body={comment.body.replace(/(<http[^>]*.)/gm, replaceAll)}
+      />
       <GroupButton content={comment} isEdit={isEdit} setIsEdit={setIsEdit} />
       {comment.children &&
         comment.children.map((reply: ContentModel) => (

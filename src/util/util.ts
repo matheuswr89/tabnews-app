@@ -137,3 +137,10 @@ export const normalizeString = (string) => {
       return String.fromCharCode(n);
     });
 };
+
+export const replaceAll = (match: any, ...args: any[]) => {
+  const index2 = match.indexOf("/>");
+  const index = match.indexOf(">");
+  const string = match.substring(1, index2 === -1 ? index : index2);
+  return `[${string}](${string})`;
+};

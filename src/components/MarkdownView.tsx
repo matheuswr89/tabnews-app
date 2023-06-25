@@ -84,6 +84,18 @@ class CustomRenderer extends Renderer implements RendererInterface {
             url: hrefSplit,
           });
         }
+      } else if (!href.includes("https://")) {
+        let hrefSplit = href.substring(1, href.length);
+        let hrefLength = hrefSplit.split("/").length;
+        if (hrefLength === 1) {
+          this.push("Perfil", {
+            name: hrefSplit,
+          });
+        } else if (hrefLength === 2) {
+          this.push("Content", {
+            url: hrefSplit,
+          });
+        }
       } else Linking.openURL(href);
     };
     return (
@@ -150,6 +162,7 @@ export default function MarkdownView({ body }: MarkdownViewInterface) {
       },
     },
   };
+
   const parsedContent = parseHTML(body);
   const normalizedContent = normalizeString(parsedContent);
   const elements = useMarkdown(normalizedContent, options);

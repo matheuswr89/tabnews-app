@@ -14,6 +14,7 @@ import {
 } from "react-native";
 
 import Icon from "react-native-vector-icons/FontAwesome5";
+import { replaceAll } from "../util/util";
 import GroupButton from "./GroupButton";
 import MarkdownView from "./MarkdownView";
 import OwnerInfo from "./OwnerInfo";
@@ -91,7 +92,9 @@ export default function Post({ value, loading, setDeleted }: PostInterface) {
                 {value.title}
               </Text>
             )}
-            <MarkdownView body={value.body} />
+            <MarkdownView
+              body={value.body.replace(/(<http[^>]*.)/gm, replaceAll)}
+            />
             {value.source_url && (
               <View style={[styles.sourceUrl, { borderTopColor: colors.text }]}>
                 <Icon name="link" size={15} color={colors.text} />

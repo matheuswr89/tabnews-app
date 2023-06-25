@@ -64,7 +64,6 @@ export default function Content({ navigation }: NavigationPage) {
     setRefreshing(true);
     getPostContent().then(() => setRefreshing(false));
   };
-
   return (
     <ScrollView
       refreshControl={
