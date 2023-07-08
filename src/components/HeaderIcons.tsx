@@ -5,6 +5,7 @@ import { Menu, MenuDivider, MenuItem } from "react-native-material-menu";
 import { useTheme as personalTheme } from "../hooks/useTheme";
 import { HeaderIconsInterface } from "../models/ComponentsModel";
 
+import * as NavigationBar from "expo-navigation-bar";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import IconMaterial from "react-native-vector-icons/MaterialIcons";
 import AuthContext from "../context/AuthContext";
@@ -48,7 +49,10 @@ export default function HeaderIcons({ show }: HeaderIconsInterface) {
 
   const hideMenu = () => setVisible(false);
 
-  const showMenu = () => setVisible(true);
+  const showMenu = () => {
+    setVisible(true);
+    NavigationBar.setBackgroundColorAsync(colors.card);
+  };
 
   return (
     !show && (

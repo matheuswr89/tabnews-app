@@ -19,9 +19,6 @@ export default function App() {
   NavigationBar.setBackgroundColorAsync(
     !mode ? DefaultTheme.colors.card : DarkTheme.colors.card
   );
-  NavigationBar.setBackgroundColorAsync(
-    !mode ? DefaultTheme.colors.card : DarkTheme.colors.card
-  );
   useEffect(() => {
     changeTheme();
   }, []);

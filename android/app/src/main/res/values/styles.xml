@@ -21,8 +21,13 @@
   <style name="Theme.FullScreenDialog">
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowIsFloating">false</item>
-    <item name="android:windowBackground">@color/navigationBarColor</item>
-    <item name="android:statusBarColor">@color/navigationBarColor</item>
-    <item name="android:navigationBarColor">@color/navigationBarColor</item>
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:statusBarColor">@color/menuBarColor</item>
+    <item name="android:navigationBarColor">@color/menuBarColor</item>
   </style>
+  <style name="Theme.PopupMenu" parent="Widget.AppCompat.PopupMenu">
+    <item name="android:statusBarColor">@color/menuBarColor</item>
+    <item name="android:navigationBarColor">@color/menuBarColor</item>
+  </style>
+
 </resources>

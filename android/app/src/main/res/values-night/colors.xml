@@ -5,4 +5,5 @@
   <color name="color">#0D1117</color>
   <color name="colorPrimaryDark">#0D1117</color>
   <color name="navigationBarColor">#0D1117</color>
+  <color name="menuBarColor">#161B22</color>
 </resources>

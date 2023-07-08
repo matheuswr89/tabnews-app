@@ -3,6 +3,8 @@ package com.tabnews;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
+
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
@@ -18,6 +20,7 @@ public class MainActivity extends ReactActivity {
     // This is required for expo-splash-screen.
     setTheme(R.style.AppTheme);
     super.onCreate(null);
+    getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.navigationBarColor));
   }
 
   /**
@@ -40,10 +43,7 @@ public class MainActivity extends ReactActivity {
         this,
         getMainComponentName(),
         // If you opted-in for the New Architecture, we enable the Fabric Renderer.
-        DefaultNewArchitectureEntryPoint.getFabricEnabled(), // fabricEnabled
-        // If you opted-in for the New Architecture, we enable Concurrent React (i.e. React 18).
-        DefaultNewArchitectureEntryPoint.getConcurrentReactEnabled() // concurrentRootEnabled
-        ));
+        DefaultNewArchitectureEntryPoint.getFabricEnabled()));
   }
 
   /**

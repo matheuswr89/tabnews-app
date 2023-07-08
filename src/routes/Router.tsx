@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useContext, useEffect } from "react";
 import { showAlert } from "../hooks/showAlert";
@@ -17,6 +17,7 @@ const { Navigator, Screen } = createNativeStackNavigator();
 
 export function AppRoutes() {
   const { navigate }: any = useNavigation();
+  const { colors } = useTheme();
   const { isTokenExpired } = useContext(AuthContext);
   const { deleteAll } = useAuth();
   useEffect(() => {
@@ -32,7 +33,7 @@ export function AppRoutes() {
     });
   }, []);
   return (
-    <Navigator initialRouteName="Buscar">
+    <Navigator initialRouteName="Home">
       <Screen
         name="Home"
         component={Home}

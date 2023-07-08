@@ -98,7 +98,7 @@ export const styles = StyleSheet.create<any>((props) => {
       alignItems: "flex-end",
     },
     deleteText: {
-      color: props.colors.notification,
+      color: "#c75656",
       fontSize: 19,
       fontWeight: "700",
     },
