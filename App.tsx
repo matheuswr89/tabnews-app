@@ -1,8 +1,8 @@
 import { NavigationContainer } from "@react-navigation/native";
+import * as NavigationBar from "expo-navigation-bar";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar"; // automatically switches bar style based on theme!
 import { useEffect, useState } from "react";
 import { DeviceEventEmitter } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthProvider } from "./src/context/AuthContext";
 import { FavoritesProvider } from "./src/context/FavoritesContext";
 import { ReloadContentProvider } from "./src/context/ReloadContentContext";
@@ -16,7 +16,12 @@ export default function App() {
   const backgroundStyle = {
     backgroundColor: !mode ? DefaultTheme.colors.card : DarkTheme.colors.card,
   };
-
+  NavigationBar.setBackgroundColorAsync(
+    !mode ? DefaultTheme.colors.card : DarkTheme.colors.card
+  );
+  NavigationBar.setBackgroundColorAsync(
+    !mode ? DefaultTheme.colors.card : DarkTheme.colors.card
+  );
   useEffect(() => {
     changeTheme();
   }, []);
@@ -34,20 +39,18 @@ export default function App() {
   DeviceEventEmitter.addListener("changeTheme", handler);
 
   return (
-    <AuthProvider>
-      <FavoritesProvider>
-        <ReloadContentProvider>
-          <NavigationContainer theme={!mode ? DefaultTheme : DarkTheme}>
-            <SafeAreaView style={{ height: "100%" }}>
-              <ExpoStatusBar
-                style={mode ? "light" : "dark"}
-                backgroundColor={backgroundStyle.backgroundColor}
-              />
-              <AppRoutes />
-            </SafeAreaView>
-          </NavigationContainer>
-        </ReloadContentProvider>
-      </FavoritesProvider>
-    </AuthProvider>
+    <NavigationContainer theme={!mode ? DefaultTheme : DarkTheme}>
+      <AuthProvider>
+        <FavoritesProvider>
+          <ReloadContentProvider>
+            <ExpoStatusBar
+              style={mode ? "light" : "dark"}
+              backgroundColor={backgroundStyle.backgroundColor}
+            />
+            <AppRoutes />
+          </ReloadContentProvider>
+        </FavoritesProvider>
+      </AuthProvider>
+    </NavigationContainer>
   );
 }

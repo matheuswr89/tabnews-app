@@ -1,5 +1,5 @@
 import { useNavigation, useTheme } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { PostInterface } from "../models/ComponentsModel";
 import { ContentModel } from "../models/Model";
 import { getParentContent } from "../service/contents";
@@ -20,7 +20,7 @@ import MarkdownView from "./MarkdownView";
 import OwnerInfo from "./OwnerInfo";
 import TabCoin from "./TabCoin";
 
-export default function Post({ value, loading, setDeleted }: PostInterface) {
+function Post({ value, loading, setDeleted }: PostInterface) {
   const [parent, setParent] = useState<ContentModel>(null);
 
   const { colors } = useTheme();
@@ -44,7 +44,6 @@ export default function Post({ value, loading, setDeleted }: PostInterface) {
       title: parent.title,
     });
   };
-
   return (
     <>
       {loading && <ActivityIndicator size="large" />}
@@ -146,3 +145,5 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 });
+
+export default memo(Post);

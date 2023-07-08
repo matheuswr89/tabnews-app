@@ -1,10 +1,6 @@
 import { parseHTML } from "@matheuswr89/react-native-markdown-editor";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { Fragment, ReactNode } from "react";
-import SyntaxHighlighter from "react-native-syntax-highlighter"; // 2.0.0
-import { colorScheme as scheme } from "../context/ThemeContext";
-import { MarkdownViewInterface } from "../models/ComponentsModel";
-
 import { Linking, Text, TextStyle, View } from "react-native";
 import {
   Renderer,
@@ -12,6 +8,9 @@ import {
   useMarkdown,
   useMarkdownHookOptions,
 } from "react-native-marked";
+import SyntaxHighlighter from "react-native-syntax-highlighter"; // 2.0.0
+import { colorScheme as scheme } from "../context/ThemeContext";
+import { MarkdownViewInterface } from "../models/ComponentsModel";
 
 import uuid from "react-native-uuid";
 import { ViewStyle } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
@@ -53,6 +52,7 @@ class CustomRenderer extends Renderer implements RendererInterface {
     containerStyle?: ViewStyle,
     textStyle?: TextStyle
   ): ReactNode {
+    containerStyle.padding = 1;
     return (
       <SyntaxHighlighter
         style={githubGist(this.colors)}

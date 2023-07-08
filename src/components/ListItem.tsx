@@ -26,9 +26,7 @@ export default function ListItem({ post, index }: ListItemInterface) {
     >
       <Text style={styles({ colors }).index}>{index + 1}.</Text>
       <View style={styles({ colors }).name}>
-        <Text style={styles({ colors }).name} numberOfLines={1}>
-          {post.title || post.body}
-        </Text>
+        <Text style={styles({ colors }).name}>{post.title || post.body}</Text>
         <View style={styles({ colors }).postInfoContainer}>
           <Text style={styles({ colors }).postInfoText}>
             {userName}

@@ -6,6 +6,7 @@ import { time_ago } from "../util/util";
 
 import AuthContext from "../context/AuthContext";
 import ActionsComments from "./ActionsComments";
+import ReadTime from "./ReadTime";
 
 export default function OwnerInfo({
   data,
@@ -36,6 +37,7 @@ export default function OwnerInfo({
         <TouchableOpacity style={styles.owner} onPress={redirectToUserPage}>
           <Text>{data?.owner_username}</Text>
         </TouchableOpacity>
+        <ReadTime text={data.body} />
         <Text style={{ color: colors.text }}>
           <Text style={{ fontWeight: "900" }}>{" · "}</Text>
           {time_ago(data.created_at)}
@@ -66,6 +68,7 @@ export const styles = StyleSheet.create({
   ownerInfo: {
     paddingTop: 3,
     flexDirection: "row",
+    flexWrap: "wrap",
     alignItems: "center",
     marginLeft: 3,
   },

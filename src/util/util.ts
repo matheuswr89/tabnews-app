@@ -35,9 +35,7 @@ export function time_ago(time: string) {
 export const githubGist = (color) => {
   return {
     hljs: {
-      display: "block",
       background: "white",
-      padding: "0.5em",
       color: color.text,
       overflowX: "auto",
     },
@@ -135,7 +133,11 @@ export const normalizeString = (string) => {
     .replace(/&ge;/g, "≥")
     .replace(/&#(\d+);/g, function (m, n) {
       return String.fromCharCode(n);
-    });
+    })
+    .replace(
+      /(<\/button><\/nativemodule><\/nativemodule><\/viewmanager>)/gm,
+      ""
+    );
 };
 
 export const replaceAll = (match: any, ...args: any[]) => {
