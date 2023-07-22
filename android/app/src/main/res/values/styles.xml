@@ -29,5 +29,4 @@
     <item name="android:statusBarColor">@color/menuBarColor</item>
     <item name="android:navigationBarColor">@color/menuBarColor</item>
   </style>
-
 </resources>

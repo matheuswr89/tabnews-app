@@ -1,6 +1,14 @@
 import { useRoute, useTheme } from "@react-navigation/native";
-import { useContext, useEffect, useState } from "react";
-import { RefreshControl, ScrollView, Text, View } from "react-native";
+import { useContext, useEffect, useRef, useState } from "react";
+import {
+  Dimensions,
+  Keyboard,
+  KeyboardEvent,
+  RefreshControl,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import { ContentModel } from "../models/Model";
 import { NavigationPage } from "../models/PagesModels";
 import { getComments } from "../service/coments";
@@ -13,15 +21,17 @@ import ReloadContentContext from "../context/ReloadContentContext";
 
 export default function Content({ navigation }: NavigationPage) {
   const { colors } = useTheme();
-  const { isReload } = useContext(ReloadContentContext);
   const { title, url }: any = useRoute().params;
-
+  const scrollViewRef = useRef<ScrollView>(null);
+  const { isReload } = useContext(ReloadContentContext);
   const [value, setValue] = useState<ContentModel>(null);
   const [deleted, setDeleted] = useState<boolean>(false);
   const [comments, setComments] = useState<ContentModel[]>([]);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [loadingPost, setLoadingPost] = useState<boolean>(false);
   const [loadingComments, setLoadingComments] = useState<boolean>(false);
+  const screenHeight = Dimensions.get("window").height;
+  let touch = 0;
 
   useEffect(() => {
     getPostContent();
@@ -64,12 +74,33 @@ export default function Content({ navigation }: NavigationPage) {
     setRefreshing(true);
     getPostContent().then(() => setRefreshing(false));
   };
+
+  const handleScroll = (event: any) => {
+    event.persist();
+    const position = event.nativeEvent.contentOffset.y;
+    Keyboard.addListener("keyboardDidShow", (e: KeyboardEvent) => {
+      if (touch < 300 && scrollViewRef && scrollViewRef.current) {
+        scrollViewRef.current?.scrollTo({
+          animated: true,
+          x: position + e.endCoordinates.height,
+          y: position + e.endCoordinates.height,
+        });
+      }
+    });
+  };
+  const onTouchStart = (event) => {
+    const touchY = event.nativeEvent.pageY;
+    touch = screenHeight - touchY;
+  };
   return (
     <ScrollView
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
       style={{ marginTop: 3 }}
+      ref={scrollViewRef}
+      onScrollEndDrag={handleScroll}
+      onTouchStart={onTouchStart}
     >
       <Post value={value} loading={loadingPost} setDeleted={setDeleted} />
       <PostComments

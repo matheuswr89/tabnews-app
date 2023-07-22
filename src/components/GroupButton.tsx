@@ -1,5 +1,5 @@
 import { useNavigation, useTheme } from "@react-navigation/native";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { isUserLogged } from "../hooks/isLogged";
 import { showAlert } from "../hooks/showAlert";
@@ -24,7 +24,7 @@ export default function GroupButton({
   const { isLogged } = useContext(AuthContext);
   const { navigate }: any = useNavigation();
   const { deleteContent, saveContent, getContent } = useContent();
-
+  const textRef = useRef<TouchableOpacity>(null);
   const [isResponder, setIsResponder] = useState(false);
   const [text, setText] = useState(isEdit ? content.body : "");
 
@@ -128,6 +128,7 @@ export default function GroupButton({
             <TouchableOpacity
               style={[styles.button, { borderColor: "#21c5f7" }]}
               onPress={clickButtonResponder}
+              ref={textRef}
             >
               <Text style={styles.textResponder}>Responder</Text>
             </TouchableOpacity>

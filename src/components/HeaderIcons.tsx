@@ -1,6 +1,12 @@
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
-import { Alert, DeviceEventEmitter, StyleSheet, Text } from "react-native";
+import {
+  Alert,
+  Appearance,
+  DeviceEventEmitter,
+  StyleSheet,
+  Text,
+} from "react-native";
 import { Menu, MenuDivider, MenuItem } from "react-native-material-menu";
 import { useTheme as personalTheme } from "../hooks/useTheme";
 import { HeaderIconsInterface } from "../models/ComponentsModel";
@@ -13,7 +19,9 @@ import AuthContext from "../context/AuthContext";
 export default function HeaderIcons({ show }: HeaderIconsInterface) {
   const { colors } = useTheme();
   const { navigate }: any = useNavigation();
-  const [mode, setMode] = useState(true);
+  const [mode, setMode] = useState(() =>
+    Appearance.getColorScheme() === "dark" ? "dark" : "light"
+  );
   const { isLogged, signOut } = useContext(AuthContext);
   const { getTheme, saveTheme } = personalTheme();
 
@@ -37,7 +45,7 @@ export default function HeaderIcons({ show }: HeaderIconsInterface) {
   async function changeTheme() {
     const theme = await getTheme();
     if (theme !== undefined) {
-      setMode(!theme);
+      setMode(theme);
     }
   }
 
@@ -90,19 +98,19 @@ export default function HeaderIcons({ show }: HeaderIconsInterface) {
         <MenuItem
           onPress={() => {
             hideMenu();
-            setMode((value) => !value);
+            setMode((value) => (value === "dark" ? "light" : "dark"));
             saveTheme(mode);
             DeviceEventEmitter.emit("changeTheme", mode);
           }}
         >
           <Text style={{ color: colors.text, fontSize: 19, lineHeight: 22 }}>
             <Icon
-              name={!mode ? "sun" : "moon"}
+              name={mode === "dark" ? "sun" : "moon"}
               color={colors.text}
               solid={true}
               style={styles.icon}
             />
-            {!mode ? "  Light" : "  Dark"}
+            {mode === "dark" ? "  Light" : "  Dark"}
           </Text>
         </MenuItem>
         {isLogged && (

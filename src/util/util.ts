@@ -129,6 +129,7 @@ export const normalizeString = (string) => {
   return string
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
     .replace(/&le;/g, "≤")
     .replace(/&ge;/g, "≥")
     .replace(/&#(\d+);/g, function (m, n) {
