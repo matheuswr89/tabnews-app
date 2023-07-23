@@ -164,7 +164,9 @@ export default function MarkdownView({ body }: MarkdownViewInterface) {
   };
 
   const parsedContent = parseHTML(body);
-  const normalizedContent = normalizeString(parsedContent);
+  const array = parsedContent.split("\n");
+  array[array.length - 1] = array[array.length - 1].replace(/(<\/.*?>)/gm, "");
+  const normalizedContent = normalizeString(array.join("\n"));
   const elements = useMarkdown(normalizedContent, options);
 
   return (

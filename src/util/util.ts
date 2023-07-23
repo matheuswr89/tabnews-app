@@ -134,11 +134,7 @@ export const normalizeString = (string) => {
     .replace(/&ge;/g, "≥")
     .replace(/&#(\d+);/g, function (m, n) {
       return String.fromCharCode(n);
-    })
-    .replace(
-      /(<\/button><\/nativemodule><\/nativemodule><\/viewmanager>)/gm,
-      ""
-    );
+    });
 };
 
 export const replaceAll = (match: any, ...args: any[]) => {

@@ -37,7 +37,7 @@ export default function OwnerInfo({
         <TouchableOpacity style={styles.owner} onPress={redirectToUserPage}>
           <Text>{data?.owner_username}</Text>
         </TouchableOpacity>
-        <ReadTime text={data.body} />
+        {!data.parent_id && <ReadTime text={data.body} />}
         <Text style={{ color: colors.text }}>
           <Text style={{ fontWeight: "900" }}>{" · "}</Text>
           {time_ago(data.created_at)}

@@ -1,101 +1,37 @@
 import { useNavigation, useTheme } from "@react-navigation/native";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { isUserLogged } from "../hooks/isLogged";
-import { showAlert } from "../hooks/showAlert";
-import { useContent } from "../hooks/useContent";
 import { GroupButtonInterface } from "../models/ComponentsModel";
-import { deleteOrEditContent, postContent } from "../service/contents";
 
 import Icon from "react-native-vector-icons/FontAwesome5";
 import AuthContext from "../context/AuthContext";
 import FavoritesContext from "../context/FavoritesContext";
 import ReloadContentContext from "../context/ReloadContentContext";
-import MarkdownEditor from "./MarkdownEditor";
+import EditorModal from "./EditorModal";
 
 export default function GroupButton({
   content,
   isEdit,
   setIsEdit,
 }: GroupButtonInterface) {
-  const { isFavorite, toggleFavorite } = useContext(FavoritesContext);
   const { toggleReload, isReload } = useContext(ReloadContentContext);
+
+  const { isFavorite, toggleFavorite } = useContext(FavoritesContext);
   const { colors } = useTheme();
   const { isLogged } = useContext(AuthContext);
   const { navigate }: any = useNavigation();
-  const { deleteContent, saveContent, getContent } = useContent();
+
   const textRef = useRef<TouchableOpacity>(null);
   const [isResponder, setIsResponder] = useState(false);
-  const [text, setText] = useState(isEdit ? content.body : "");
 
-  const parentId = content.parent_id;
   const url = `${content.owner_username}/${content.slug}`;
-  const slug = `-comment-${content.parent_id}`;
-
   if (!isReload) toggleReload();
-
-  useEffect(() => {
-    getContent(slug).then((res) => {
-      if (res) {
-        setText(res);
-      }
-    });
-  }, []);
-
-  const adicionarPost = () => {
-    const data = {
-      body: text,
-      status: "published",
-      parent_id: content.id,
-    };
-    showAlert({
-      title: "Deseja realmente adicionar o comentário?",
-      onPressYes: () =>
-        postContent(data, toggleReload).then(() => deleteContent(slug)),
-    });
-  };
-
-  const editaContent = () => {
-    const data = {
-      status: "published",
-      body: text,
-      parent_id: parentId,
-    };
-    showAlert({
-      title: "Deseja realmente editar o comentario?",
-      onPressYes: () =>
-        deleteOrEditContent(url, data, toggleReload).then(() =>
-          deleteContent(slug)
-        ),
-    });
-  };
 
   const clickButtonResponder = () => {
     isUserLogged(isLogged, navigate);
     if (isLogged) {
       setIsResponder(!isResponder);
-    }
-  };
-
-  const clickCancelarButton = () => {
-    showAlert({
-      title: "Deseja realmente cancelar?",
-      message: "Os dados não salvos serão perdidos.",
-      onPressYes: () => {
-        setIsResponder(!isResponder);
-        if (isEdit === true) setIsEdit(false);
-        deleteContent(slug);
-      },
-    });
-  };
-
-  const clickEnviarButton = () => {
-    setIsResponder(!isResponder);
-    if (isEdit === true) {
-      editaContent();
-      setIsEdit(false);
-    } else {
-      adicionarPost();
     }
   };
 
@@ -107,11 +43,6 @@ export default function GroupButton({
 
   const favoritePost = () => {
     toggleFavorite(content);
-  };
-
-  const onTextChange = (text) => {
-    saveContent(slug, text);
-    setText(text);
   };
 
   return (
@@ -151,26 +82,15 @@ export default function GroupButton({
       </View>
       <View>
         {(isResponder || isEdit) && (
-          <>
-            <View>
-              <MarkdownEditor body={text} onChangeText={onTextChange} />
-            </View>
-            <View style={styles.container}>
-              <TouchableOpacity
-                style={[styles.button, { borderColor: "#21c5f7" }]}
-                onPress={clickEnviarButton}
-              >
-                <Text style={styles.textResponder}>Enviar</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.button, { borderColor: "#f72121" }]}
-                onPress={clickCancelarButton}
-              >
-                <Text style={styles.textExcluir}>Cancelar</Text>
-              </TouchableOpacity>
-            </View>
-          </>
+          <View style={styles.view}>
+            <EditorModal
+              content={content}
+              isEdit={isEdit}
+              setIsEdit={setIsEdit}
+              isResponder={isResponder}
+              setIsResponder={setIsResponder}
+            />
+          </View>
         )}
       </View>
     </View>
@@ -197,5 +117,10 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     width: 80,
+  },
+  view: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
